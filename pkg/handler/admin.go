@@ -8,12 +8,6 @@ import (
 )
 
 func (h *Handler) GetTeamLeads(c *gin.Context) {
-	var inp domain.UserID
-	if err := c.BindJSON(&inp); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
-		return
-	}
-
 	teamleads, err := h.services.Admin.GetTeamLeads(c)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())

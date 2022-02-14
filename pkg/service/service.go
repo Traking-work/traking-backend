@@ -5,6 +5,7 @@ import (
 
 	"github.com/Traking-work/traking-backend.git/pkg/repository"
 	"github.com/Traking-work/traking-backend.git/internal/domain"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type userData struct {
@@ -26,14 +27,26 @@ type Admin interface {
 	AddUser(ctx context.Context, inp domain.UserData) error
 }
 
+type Teamlead interface {
+	GetStaff(ctx context.Context, userID primitive.ObjectID) ([]domain.UserData, error)
+}
+
+type Staff interface {
+
+}
+
 type Service struct {
 	Authorization
 	Admin
+	Teamlead
+	Staff
 }
 
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthorizationService(repos.Authorization),
 		Admin: 		   NewAdminService(repos.Admin),
+		Teamlead: 	   NewTeamleadService(repos.Teamlead),
+		Staff: 		   NewStaffService(repos.Staff),
 	}
 }

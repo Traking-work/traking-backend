@@ -15,9 +15,9 @@ type UserData struct {
 	Username string `json:"username" binding:"required"`
 	Password string `json:"password" binding:"required"`
 	Position string `json:"position" binding:"required"`
-	TeamLead string `json:"teamlead"`
+	TeamLead primitive.ObjectID `json:"teamlead"`
 }
 
 type UserID struct {
-	UserID string `json:"user_id" binding:"required"`
+	ID string `json:"user_id" binding:"required"`
 }

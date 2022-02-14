@@ -21,14 +21,27 @@ type Admin interface {
 	AddUser(ctx context.Context, inp domain.UserData) error
 }
 
+type Teamlead interface{
+	GetData(ctx context.Context, userID primitive.ObjectID) (domain.UserData, error)
+	GetStaff(ctx context.Context, userID primitive.ObjectID) ([]domain.UserData, error)
+}
+
+type Staff interface {
+
+}
+
 type Repository struct {
 	Authorization
 	Admin
+	Teamlead
+	Staff
 }
 
 func NewRepository(db *mongo.Client) *Repository {
 	return &Repository{
 		Authorization: NewAuthorizationRepo(db.Database(viper.GetString("mongo.databaseName"))),
 		Admin: 		   NewAdminRepo(db.Database(viper.GetString("mongo.databaseName"))),
+		Teamlead:      NewTeamleadRepo(db.Database(viper.GetString("mongo.databaseName"))),
+		Staff: 		   NewStaffRepo(db.Database(viper.GetString("mongo.databaseName"))),
 	}
 }
