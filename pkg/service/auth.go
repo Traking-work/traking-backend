@@ -21,29 +21,29 @@ const (
 	refreshTokenTTL = 30 * 24 * time.Hour
 )
 
-type AdminsService struct {
-	repo repository.Admins
+type AuthorizationService struct {
+	repo repository.Authorization
 }
 
-func NewAdminsService(repo repository.Admins) *AdminsService {
+func NewAuthorizationService(repo repository.Authorization) *AuthorizationService {
 	logger := logging.GetLogger()
 	if err := godotenv.Load(); err != nil {
 		logger.Fatalf("error loading env variables: %s", err.Error())
 	}
 
-	return &AdminsService{repo: repo}
+	return &AuthorizationService{repo: repo}
 }
 
-func (s *AdminsService) Login(ctx context.Context, username, password string) (userData, error) {
+func (s *AuthorizationService) Login(ctx context.Context, username, password string) (userData, error) {
 	user, err := s.repo.GetUser(ctx, username, generatePasswordHash(password))
 	if err != nil {
 		return userData{}, err
 	}
 
-	return s.CreateSession(ctx, user.ID)
+	return s.CreateSession(ctx, user.ID, user.Position)
 }
 
-func (s *AdminsService) Refresh(ctx context.Context, refreshToken string) (userData, error) {
+func (s *AuthorizationService) Refresh(ctx context.Context, refreshToken string) (userData, error) {
 	_, err := s.ParseToken(refreshToken)
 	if err != nil {
 		return userData{}, err
@@ -54,10 +54,10 @@ func (s *AdminsService) Refresh(ctx context.Context, refreshToken string) (userD
 		return userData{}, err
 	}
 
-	return s.CreateSession(ctx, user.ID)
+	return s.CreateSession(ctx, user.ID, user.Position)
 }
 
-func (s *AdminsService) Logout(ctx context.Context, refreshToken string) error {
+func (s *AuthorizationService) Logout(ctx context.Context, refreshToken string) error {
 	err := s.repo.RemoveRefreshToken(ctx, refreshToken)
 	if err != nil {
 		return err
@@ -66,13 +66,14 @@ func (s *AdminsService) Logout(ctx context.Context, refreshToken string) error {
 	return nil
 }
 
-func (s *AdminsService) CreateSession(ctx context.Context, userId primitive.ObjectID) (userData, error) {
+func (s *AuthorizationService) CreateSession(ctx context.Context, userId primitive.ObjectID, position string) (userData, error) {
 	var (
 		res userData
 		err error
 	)
 
 	res.UserID = userId.Hex()
+	res.Position = position
 	res.AccessToken, err = NewJWT(userId.Hex(), accessTokenTTL)
 	if err != nil {
 		return res, err
@@ -101,7 +102,7 @@ func NewJWT(userId string, tokenTTL time.Duration) (string, error) {
 	return token.SignedString([]byte(os.Getenv("SECRET_KEY")))
 }
 
-func (s *AdminsService) ParseToken(accessToken string) (string, error) {
+func (s *AuthorizationService) ParseToken(accessToken string) (string, error) {
 	token, err := jwt.Parse(accessToken, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, errors.New("unexpected signing method")

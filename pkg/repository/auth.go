@@ -11,15 +11,15 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type AdminsRepo struct {
+type AuthorizationRepo struct {
 	db *mongo.Collection
 }
 
-func NewAdminsRepo(db *mongo.Database) *AdminsRepo {
-	return &AdminsRepo{db: db.Collection(adminsCollection)}
+func NewAuthorizationRepo(db *mongo.Database) *AuthorizationRepo {
+	return &AuthorizationRepo{db: db.Collection(usersCollection)}
 }
 
-func (r *AdminsRepo) GetUser(ctx context.Context, username, password string) (domain.User, error) {
+func (r *AuthorizationRepo) GetUser(ctx context.Context, username, password string) (domain.User, error) {
 	var user domain.User
 
 	if err := r.db.FindOne(ctx, bson.M{"username": username, "password": password}).Decode(&user); err != nil {
@@ -33,7 +33,7 @@ func (r *AdminsRepo) GetUser(ctx context.Context, username, password string) (do
 	return user, nil
 }
 
-func (r *AdminsRepo) SetSession(ctx context.Context, userID primitive.ObjectID, session domain.Session) error {
+func (r *AuthorizationRepo) SetSession(ctx context.Context, userID primitive.ObjectID, session domain.Session) error {
 	_, err := r.db.UpdateOne(ctx, bson.M{"_id": userID}, bson.M{
 		"$set": bson.M{
 			"session": session,
@@ -42,7 +42,7 @@ func (r *AdminsRepo) SetSession(ctx context.Context, userID primitive.ObjectID, 
 	return err
 }
 
-func (r *AdminsRepo) GetByRefreshToken(ctx context.Context, refreshToken string) (domain.User, error) {
+func (r *AuthorizationRepo) GetByRefreshToken(ctx context.Context, refreshToken string) (domain.User, error) {
 	var user domain.User
 	if err := r.db.FindOne(ctx, bson.M{
 		"session.refreshToken": refreshToken,
@@ -58,7 +58,7 @@ func (r *AdminsRepo) GetByRefreshToken(ctx context.Context, refreshToken string)
 	return user, nil
 }
 
-func (r *AdminsRepo) RemoveRefreshToken(ctx context.Context, refreshToken string) error {
+func (r *AuthorizationRepo) RemoveRefreshToken(ctx context.Context, refreshToken string) error {
 	_, err := r.db.UpdateOne(ctx, bson.M{"session.refreshToken": refreshToken}, bson.M{
 		"$set": bson.M{
 			"session.refreshToken": "",

@@ -3,30 +3,36 @@ package service
 import (
 	"context"
 
-	"github.com/Traking-work/traking-backend.git/internal/domain"
 	"github.com/Traking-work/traking-backend.git/pkg/repository"
-	"go.mongodb.org/mongo-driver/bson/primitive"
+	"github.com/Traking-work/traking-backend.git/internal/domain"
 )
 
 type userData struct {
 	AccessToken  string
+	Position     string
 	RefreshToken string
 	UserID       string
 }
 
-type Admins interface {
+type Authorization interface {
 	Login(ctx context.Context, username, password string) (userData, error)
 	Refresh(ctx context.Context, refreshToken string) (userData, error)
 	Logout(ctx context.Context, refreshToken string) error
 	ParseToken(token string) (string, error)
 }
 
+type Admin interface {
+	AddUser(ctx context.Context, inp domain.NewUser) error
+}
+
 type Service struct {
-	Admins
+	Authorization
+	Admin
 }
 
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
-		Admins: NewAdminsService(repos.Admins),
+		Authorization: NewAuthorizationService(repos.Authorization),
+		Admin: 		   NewAdminService(repos.Admin),
 	}
 }

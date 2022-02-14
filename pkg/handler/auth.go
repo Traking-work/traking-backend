@@ -33,12 +33,13 @@ func (h *Handler) Login(c *gin.Context) {
 		HttpOnly: true,
 	})
 
-	h.logger.Infof("Login user %s", res.UserID)
+	h.logger.Infof("Login admin %s", res.UserID)
 
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"accessToken": res.AccessToken,
+		"position": res.Position,
 		//"refreshToken": res.RefreshToken,
-		//"userID": res.UserID,
+		"userID": res.UserID,
 	})
 }
 
@@ -67,12 +68,13 @@ func (h *Handler) Refresh(c *gin.Context) {
 		HttpOnly: true,
 	})
 
-	h.logger.Infof("Refresh user %s", res.UserID)
+	h.logger.Infof("Refresh admin %s", res.UserID)
 
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"accessToken": res.AccessToken,
+		"position": res.Position,
 		//"refreshToken": res.RefreshToken,
-		//"userID": res.UserID,
+		"userID": res.UserID,
 	})
 }
 
@@ -99,7 +101,7 @@ func (h *Handler) Logout(c *gin.Context) {
 		MaxAge: -1,
 	})
 
-	h.logger.Infof("Logout user %s", refreshToken)
+	h.logger.Infof("Logout admin %s", refreshToken)
 
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"status": "ok",
