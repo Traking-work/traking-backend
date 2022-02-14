@@ -25,7 +25,12 @@ func NewAdminService(repo repository.Admin) *AdminService {
 	return &AdminService{repo: repo}
 }
 
-func (s *AdminService) AddUser(ctx context.Context, inp domain.NewUser) error {
+func (s *AdminService) GetTeamLeads(ctx context.Context) ([]domain.UserData, error) {
+	teamleads, err := s.repo.GetTeamLeads(ctx)
+	return teamleads, err
+}
+
+func (s *AdminService) AddUser(ctx context.Context, inp domain.UserData) error {
 	inp.Password = generateHash(inp.Password)
 
 	err := s.repo.AddUser(ctx, inp)

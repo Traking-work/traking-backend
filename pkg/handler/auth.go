@@ -10,7 +10,7 @@ import (
 )
 
 func (h *Handler) Login(c *gin.Context) {
-	var inp domain.User
+	var inp domain.UserLogin
 	if err := c.BindJSON(&inp); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
 		return

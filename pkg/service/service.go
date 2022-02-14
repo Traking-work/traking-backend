@@ -22,7 +22,8 @@ type Authorization interface {
 }
 
 type Admin interface {
-	AddUser(ctx context.Context, inp domain.NewUser) error
+	GetTeamLeads(ctx context.Context) ([]domain.UserData, error)
+	AddUser(ctx context.Context, inp domain.UserData) error
 }
 
 type Service struct {
