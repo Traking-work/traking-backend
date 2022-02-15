@@ -32,3 +32,8 @@ func (s *StaffService) AddAccount(ctx context.Context, account domain.NewAccount
 	err := s.repo.AddAccount(ctx, account, userID)
 	return err
 }
+
+func (s *StaffService) GetDataAccount(ctx context.Context, accountID primitive.ObjectID) ([]domain.AccountTable, error) {
+	dataAccount, err := s.repo.GetDataAccount(ctx, accountID)
+	return dataAccount, err
+}

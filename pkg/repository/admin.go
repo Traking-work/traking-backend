@@ -32,6 +32,13 @@ func (r *AdminRepo) GetTeamLeads(ctx context.Context) ([]domain.UserData, error)
 }
 
 func (r *AdminRepo) AddUser(ctx context.Context, inp domain.UserData) error {
-	_, err := r.db.InsertOne(ctx, inp)
+	var err error
+
+	if inp.Position == "staff" {
+		_, err = r.db.InsertOne(ctx, inp)
+	} else {
+		_, err = r.db.InsertOne(ctx, bson.M{"name": inp.Name, "username": inp.Username, "password": inp.Password, "position": inp.Position})
+	}
+
 	return err
 }

@@ -59,6 +59,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		{
 			staff.POST("/get-accounts", h.GetAccounts)
 			staff.POST("/add-account", h.AddAccount)
+			staff.GET("/:accountID", h.GetDataAccount)
 		}
 	}
 

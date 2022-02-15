@@ -27,19 +27,9 @@ func (h *Handler) AddUser(c *gin.Context) {
 		return
 	}
 
-	var err error
-
-	if inp.Position == "teamlead" {
-		err = h.services.Admin.AddUser(c, inp)
-		if err != nil {
-			newErrorResponse(c, http.StatusBadRequest, err.Error())
-			return
-		}
-	} else {
-		err = h.services.Admin.AddUser(c, inp)
-		if err != nil {
-			newErrorResponse(c, http.StatusBadRequest, err.Error())
-			return
-		}
+	err := h.services.Admin.AddUser(c, inp)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
 	}
 }

@@ -36,3 +36,18 @@ func (r *StaffRepo) AddAccount(ctx context.Context, account domain.NewAccount, u
 	_, err := r.db.InsertOne(ctx, bson.M{"name": account.Name, "user_id": userID})
 	return err
 }
+
+func (r *StaffRepo) GetDataAccount(ctx context.Context, accountID primitive.ObjectID) ([]domain.AccountTable, error) {
+	var dataAccount []domain.AccountTable
+
+	cur, err := r.db.Database().Collection(packAccountsCollection).Find(ctx, bson.M{"account_id": accountID})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := cur.All(ctx, &dataAccount); err != nil {
+		return nil, err
+	}
+
+	return dataAccount, nil
+}

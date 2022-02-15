@@ -48,3 +48,19 @@ func (h *Handler) AddAccount(c *gin.Context) {
 		return
 	}
 }
+
+func (h *Handler) GetDataAccount(c *gin.Context) {
+	accountID, err := primitive.ObjectIDFromHex(c.Param("accountID"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	dataAccount, err := h.services.Staff.GetDataAccount(c, accountID)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, dataAccount)
+}
