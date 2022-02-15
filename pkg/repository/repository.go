@@ -27,7 +27,8 @@ type Teamlead interface{
 }
 
 type Staff interface {
-
+	GetAccounts(ctx context.Context, userID primitive.ObjectID) ([]domain.AccountData, error)
+	AddAccount(ctx context.Context, account domain.NewAccount, userID primitive.ObjectID) error
 }
 
 type Repository struct {

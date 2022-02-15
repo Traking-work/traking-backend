@@ -47,18 +47,18 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		admin := api.Group("/admin", h.userIdentity)
 		{
 			admin.GET("/get-teamleads", h.GetTeamLeads)
-			admin.POST("/get-staff", h.GetStaff)
 			admin.POST("/add-user", h.AddUser)
 		}
 
 		teamlead := api.Group("/teamlead", h.userIdentity)
 		{
-			teamlead.POST("/")
+			teamlead.POST("/get-staff", h.GetStaff)
 		}
 
 		staff := api.Group("/staff", h.userIdentity)
 		{
-			staff.POST("/")
+			staff.POST("/get-accounts", h.GetAccounts)
+			staff.POST("/add-account", h.AddAccount)
 		}
 	}
 
