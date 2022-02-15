@@ -25,9 +25,19 @@ func NewAdminService(repo repository.Admin) *AdminService {
 	return &AdminService{repo: repo}
 }
 
-func (s *AdminService) GetTeamLeads(ctx context.Context) ([]domain.UserData, error) {
+func (s *AdminService) GetTeamLeads(ctx context.Context) ([]domain.UserData, []domain.UserSelect, error) {
 	teamleads, err := s.repo.GetTeamLeads(ctx)
-	return teamleads, err
+	if err != nil {
+		return nil, nil, err
+	}
+
+	teamleadsCreate := []domain.UserSelect{}
+
+	for _, teamlead := range teamleads {
+		teamleadsCreate = append(teamleadsCreate, domain.UserSelect{teamlead.ID, teamlead.Name})
+	}
+
+	return teamleads, teamleadsCreate, nil
 }
 
 func (s *AdminService) AddUser(ctx context.Context, inp domain.UserData) error {

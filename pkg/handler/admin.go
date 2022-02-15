@@ -8,13 +8,16 @@ import (
 )
 
 func (h *Handler) GetTeamLeads(c *gin.Context) {
-	teamleads, err := h.services.Admin.GetTeamLeads(c)
+	teamleads, teamleadCreate, err := h.services.Admin.GetTeamLeads(c)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, teamleads)
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"teamleads": teamleads,
+		"teamleadCreate": teamleadCreate,
+	})
 }
 
 func (h *Handler) AddUser(c *gin.Context) {

@@ -21,3 +21,8 @@ type UserData struct {
 type UserID struct {
 	ID string `json:"user_id" binding:"required"`
 }
+
+type UserSelect struct {
+	Value primitive.ObjectID `json:"value" binding:"required"`
+	Name  string `json:"name" binding:"required"`
+}

@@ -23,7 +23,7 @@ type Authorization interface {
 }
 
 type Admin interface {
-	GetTeamLeads(ctx context.Context) ([]domain.UserData, error)
+	GetTeamLeads(ctx context.Context) ([]domain.UserData, []domain.UserSelect, error)
 	AddUser(ctx context.Context, inp domain.UserData) error
 }
 
