@@ -9,13 +9,7 @@ import (
 )
 
 func (h *Handler) GetAccounts(c *gin.Context) {
-	var inp domain.UserID
-	if err := c.BindJSON(&inp); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
-		return
-	}
-
-	userID, err := primitive.ObjectIDFromHex(inp.ID)
+	userID, err := primitive.ObjectIDFromHex(c.Param("userID"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -31,19 +25,20 @@ func (h *Handler) GetAccounts(c *gin.Context) {
 }
 
 func (h *Handler) AddAccount(c *gin.Context) {
-	var inp domain.NewAccount
-	if err := c.BindJSON(&inp); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
-		return
-	}
-
-	userID, err := primitive.ObjectIDFromHex(inp.UserID)
+	userID, err := primitive.ObjectIDFromHex(c.Param("userID"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	if err := h.services.Staff.AddAccount(c, inp, userID); err != nil {
+	var inp domain.NewAccount
+	if err := c.BindJSON(&inp); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
+		return
+	}
+	inp.UserID = userID
+
+	if err := h.services.Staff.AddAccount(c, inp); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}

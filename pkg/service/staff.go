@@ -28,8 +28,8 @@ func (s *StaffService) GetAccounts(ctx context.Context, userID primitive.ObjectI
 	return accounts, err
 }
 
-func (s *StaffService) AddAccount(ctx context.Context, account domain.NewAccount, userID primitive.ObjectID) error {
-	err := s.repo.AddAccount(ctx, account, userID)
+func (s *StaffService) AddAccount(ctx context.Context, account domain.NewAccount) error {
+	err := s.repo.AddAccount(ctx, account)
 	return err
 }
 

@@ -4,7 +4,7 @@ import "go.mongodb.org/mongo-driver/bson/primitive"
 
 type NewAccount struct {
 	Name   string `json:"name" binding:"required"`
-	UserID string `json:"user_id" binding:"required"`
+	UserID primitive.ObjectID `json:"user_id" bson:"user_id"`
 }
 
 type AccountData struct {

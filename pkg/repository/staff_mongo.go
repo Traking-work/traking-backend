@@ -32,8 +32,8 @@ func (r *StaffRepo) GetAccounts(ctx context.Context, userID primitive.ObjectID) 
 	return accounts, nil
 }
 	
-func (r *StaffRepo) AddAccount(ctx context.Context, account domain.NewAccount, userID primitive.ObjectID) error {
-	_, err := r.db.InsertOne(ctx, bson.M{"name": account.Name, "user_id": userID})
+func (r *StaffRepo) AddAccount(ctx context.Context, account domain.NewAccount) error {
+	_, err := r.db.InsertOne(ctx, account)
 	return err
 }
 
