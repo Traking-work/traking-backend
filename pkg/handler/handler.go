@@ -61,6 +61,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			staff.POST("/:userID/add-account", h.AddAccount)
 			staff.GET("/:userID/:accountID", h.GetDataAccount)
 			staff.POST("/:userID/:accountID/add-pack", h.AddPack)
+			staff.GET("/:userID/:accountID/delete-account", h.DeleteAccount)
 		}
 	}
 

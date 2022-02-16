@@ -56,3 +56,8 @@ func (r *StaffRepo) AddPack(ctx context.Context, accountID primitive.ObjectID, p
 	_, err := r.db.Database().Collection(packAccountsCollection).InsertOne(ctx, bson.M{"account_id": accountID, "name": pack.Name, "count_task": pack.CountTask, "approved": pack.Approved})
 	return err
 }
+
+func (r *StaffRepo) DeleteAccount(ctx context.Context, accountID primitive.ObjectID) error {
+	_, err := r.db.DeleteOne(ctx, bson.M{"_id": accountID})
+	return err
+}

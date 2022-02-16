@@ -78,3 +78,16 @@ func (h *Handler) AddPack(c *gin.Context) {
 		return
 	}
 }
+
+func (h *Handler) DeleteAccount(c *gin.Context) {
+	accountID, err := primitive.ObjectIDFromHex(c.Param("accountID"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := h.services.Staff.DeleteAccount(c, accountID); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+}

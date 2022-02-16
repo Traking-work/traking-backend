@@ -42,3 +42,8 @@ func (s *StaffService) AddPack(ctx context.Context, accountID primitive.ObjectID
 	err := s.repo.AddPack(ctx, accountID, pack)
 	return err
 }
+
+func (s *StaffService) DeleteAccount(ctx context.Context, accountID primitive.ObjectID) error {
+	err := s.repo.DeleteAccount(ctx, accountID)
+	return err
+}
