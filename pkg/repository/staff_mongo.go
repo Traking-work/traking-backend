@@ -51,3 +51,8 @@ func (r *StaffRepo) GetDataAccount(ctx context.Context, accountID primitive.Obje
 
 	return dataAccount, nil
 }
+
+func (r *StaffRepo) AddPack(ctx context.Context, accountID primitive.ObjectID, pack domain.AccountTable) error {
+	_, err := r.db.Database().Collection(packAccountsCollection).InsertOne(ctx, bson.M{"account_id": accountID, "name": pack.Name, "count_task": pack.CountTask, "approved": pack.Approved})
+	return err
+}

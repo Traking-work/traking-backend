@@ -30,6 +30,7 @@ type Staff interface {
 	GetAccounts(ctx context.Context, userID primitive.ObjectID) ([]domain.AccountData, error)
 	AddAccount(ctx context.Context, account domain.NewAccount) error
 	GetDataAccount(ctx context.Context, accountID primitive.ObjectID) ([]domain.AccountTable, error)
+	AddPack(ctx context.Context, accountID primitive.ObjectID, pack domain.AccountTable) error
 }
 
 type Repository struct {

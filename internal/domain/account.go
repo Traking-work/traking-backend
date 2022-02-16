@@ -13,7 +13,7 @@ type AccountData struct {
 }
 
 type AccountTable struct {
-	Name     string `json:"name" binding:"required"`
-	Count    int `json:"count" binding:"required"`
-	Approved bool `json:"approved" binding:"required"`
+	Name      string `json:"name"`
+	CountTask int `json:"count_task" bson:"count_task"`
+	Approved  bool `json:"approved"`
 }

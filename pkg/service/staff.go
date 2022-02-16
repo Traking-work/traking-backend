@@ -37,3 +37,8 @@ func (s *StaffService) GetDataAccount(ctx context.Context, accountID primitive.O
 	dataAccount, err := s.repo.GetDataAccount(ctx, accountID)
 	return dataAccount, err
 }
+
+func (s *StaffService) AddPack(ctx context.Context, accountID primitive.ObjectID, pack domain.AccountTable) error {
+	err := s.repo.AddPack(ctx, accountID, pack)
+	return err
+}

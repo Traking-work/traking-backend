@@ -59,3 +59,22 @@ func (h *Handler) GetDataAccount(c *gin.Context) {
 
 	c.JSON(http.StatusOK, dataAccount)
 }
+
+func (h *Handler) AddPack(c *gin.Context) {
+	accountID, err := primitive.ObjectIDFromHex(c.Param("accountID"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	var inp domain.AccountTable
+	if err := c.BindJSON(&inp); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
+		return
+	}
+
+	if err := h.services.Staff.AddPack(c, accountID, inp); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+}
