@@ -21,6 +21,22 @@ func (h *Handler) GetTeamLeads(c *gin.Context) {
 	})
 }
 
+func (h *Handler) GetWorkers(c *gin.Context) {
+	userID, err := primitive.ObjectIDFromHex(c.Param("userID"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	workers, err := h.services.Admin.GetWorkers(c, userID)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, workers)
+}
+
 func (h *Handler) AddUser(c *gin.Context) {
 	var inp domain.UserData
 	if err := c.BindJSON(&inp); err != nil {

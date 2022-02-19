@@ -41,6 +41,11 @@ func (s *AdminService) GetTeamLeads(ctx context.Context) ([]domain.UserData, []d
 	return teamleads, teamleadsCreate, nil
 }
 
+func (s *AdminService) GetWorkers(ctx context.Context, userID primitive.ObjectID) ([]domain.UserData, error) {
+	workers, err := s.repo.GetWorkers(ctx, userID)
+	return workers, err
+}
+
 func (s *AdminService) AddUser(ctx context.Context, inp domain.UserData) error {
 	inp.Password = generateHash(inp.Password)
 

@@ -32,6 +32,21 @@ func (r *AdminRepo) GetTeamLeads(ctx context.Context) ([]domain.UserData, error)
 	return teamleads, nil
 }
 
+func (r *AdminRepo) GetWorkers(ctx context.Context, userID primitive.ObjectID) ([]domain.UserData, error) {
+	var workers []domain.UserData
+
+	cur, err := r.db.Find(ctx, bson.M{"teamlead": userID})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := cur.All(ctx, &workers); err != nil {
+		return nil, err
+	}
+
+	return workers, nil
+}
+
 func (r *AdminRepo) AddUser(ctx context.Context, inp domain.UserData) error {
 	var err error
 
