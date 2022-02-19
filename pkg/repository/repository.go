@@ -31,9 +31,10 @@ type Teamlead interface{
 type Staff interface {
 	GetAccounts(ctx context.Context, userID primitive.ObjectID) ([]domain.AccountData, error)
 	AddAccount(ctx context.Context, account domain.NewAccount) error
-	GetDataAccount(ctx context.Context, accountID primitive.ObjectID) ([]domain.AccountTable, error)
+	GetDataAccount(ctx context.Context, accountID primitive.ObjectID, date string) ([]domain.AccountTable, error)
 	AddPack(ctx context.Context, accountID primitive.ObjectID, pack domain.AccountTable) error
 	UpgradePack(ctx context.Context, packID primitive.ObjectID, pack domain.AccountTable) error
+	ApprovePack(ctx context.Context, packID primitive.ObjectID) error
 	DeleteAccount(ctx context.Context, accountID primitive.ObjectID) error
 }
 

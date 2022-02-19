@@ -33,8 +33,8 @@ func (s *StaffService) AddAccount(ctx context.Context, account domain.NewAccount
 	return err
 }
 
-func (s *StaffService) GetDataAccount(ctx context.Context, accountID primitive.ObjectID) ([]domain.AccountTable, error) {
-	dataAccount, err := s.repo.GetDataAccount(ctx, accountID)
+func (s *StaffService) GetDataAccount(ctx context.Context, accountID primitive.ObjectID, date string) ([]domain.AccountTable, error) {
+	dataAccount, err := s.repo.GetDataAccount(ctx, accountID, date)
 	return dataAccount, err
 }
 
@@ -45,6 +45,11 @@ func (s *StaffService) AddPack(ctx context.Context, accountID primitive.ObjectID
 
 func (s *StaffService) UpgradePack(ctx context.Context, packID primitive.ObjectID, pack domain.AccountTable) error {
 	err := s.repo.UpgradePack(ctx, packID, pack)
+	return err
+}
+
+func (s *StaffService) ApprovePack(ctx context.Context, packID primitive.ObjectID) error {
+	err := s.repo.ApprovePack(ctx, packID)
 	return err
 }
 

@@ -51,7 +51,13 @@ func (h *Handler) GetDataAccount(c *gin.Context) {
 		return
 	}
 
-	dataAccount, err := h.services.Staff.GetDataAccount(c, accountID)
+	var inp domain.AccountTable
+	if err := c.BindJSON(&inp); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
+		return
+	}
+
+	dataAccount, err := h.services.Staff.GetDataAccount(c, accountID, inp.Date)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -93,6 +99,19 @@ func (h *Handler) UpgradePack(c *gin.Context) {
 	}
 
 	if err := h.services.Staff.UpgradePack(c, packID, inp); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+}
+
+func (h *Handler) ApprovePack(c *gin.Context) {
+	packID, err := primitive.ObjectIDFromHex(c.Param("ID"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := h.services.Staff.ApprovePack(c, packID); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}

@@ -37,10 +37,10 @@ func (r *StaffRepo) AddAccount(ctx context.Context, account domain.NewAccount) e
 	return err
 }
 
-func (r *StaffRepo) GetDataAccount(ctx context.Context, accountID primitive.ObjectID) ([]domain.AccountTable, error) {
+func (r *StaffRepo) GetDataAccount(ctx context.Context, accountID primitive.ObjectID, date string) ([]domain.AccountTable, error) {
 	var dataAccount []domain.AccountTable
 
-	cur, err := r.db.Database().Collection(packAccountsCollection).Find(ctx, bson.M{"account_id": accountID})
+	cur, err := r.db.Database().Collection(packAccountsCollection).Find(ctx, bson.M{"account_id": accountID, "date": date})
 	if err != nil {
 		return nil, err
 	}
@@ -59,6 +59,11 @@ func (r *StaffRepo) AddPack(ctx context.Context, accountID primitive.ObjectID, p
 
 func (r *StaffRepo) UpgradePack(ctx context.Context, packID primitive.ObjectID, pack domain.AccountTable) error {
 	_, err := r.db.Database().Collection(packAccountsCollection).UpdateOne(ctx, bson.M{"_id": packID}, bson.M{"$set": bson.M{"name": pack.Name, "count_task": pack.CountTask}})
+	return err
+}
+
+func (r *StaffRepo) ApprovePack(ctx context.Context, packID primitive.ObjectID) error {
+	_, err := r.db.Database().Collection(packAccountsCollection).UpdateOne(ctx, bson.M{"_id": packID}, bson.M{"$set": bson.M{"approved": true}})
 	return err
 }
 
