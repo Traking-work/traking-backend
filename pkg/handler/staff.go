@@ -9,7 +9,7 @@ import (
 )
 
 func (h *Handler) GetAccounts(c *gin.Context) {
-	userID, err := primitive.ObjectIDFromHex(c.Param("userID"))
+	userID, err := primitive.ObjectIDFromHex(c.Param("ID"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -25,7 +25,7 @@ func (h *Handler) GetAccounts(c *gin.Context) {
 }
 
 func (h *Handler) AddAccount(c *gin.Context) {
-	userID, err := primitive.ObjectIDFromHex(c.Param("userID"))
+	userID, err := primitive.ObjectIDFromHex(c.Param("ID"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -45,7 +45,7 @@ func (h *Handler) AddAccount(c *gin.Context) {
 }
 
 func (h *Handler) GetDataAccount(c *gin.Context) {
-	accountID, err := primitive.ObjectIDFromHex(c.Param("accountID"))
+	accountID, err := primitive.ObjectIDFromHex(c.Param("ID"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -61,7 +61,7 @@ func (h *Handler) GetDataAccount(c *gin.Context) {
 }
 
 func (h *Handler) AddPack(c *gin.Context) {
-	accountID, err := primitive.ObjectIDFromHex(c.Param("accountID"))
+	accountID, err := primitive.ObjectIDFromHex(c.Param("ID"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -79,8 +79,27 @@ func (h *Handler) AddPack(c *gin.Context) {
 	}
 }
 
+func (h *Handler) UpgradePack(c *gin.Context) {
+	packID, err := primitive.ObjectIDFromHex(c.Param("ID"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	var inp domain.AccountTable
+	if err := c.BindJSON(&inp); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
+		return
+	}
+
+	if err := h.services.Staff.UpgradePack(c, packID, inp); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+}
+
 func (h *Handler) DeleteAccount(c *gin.Context) {
-	accountID, err := primitive.ObjectIDFromHex(c.Param("accountID"))
+	accountID, err := primitive.ObjectIDFromHex(c.Param("ID"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return

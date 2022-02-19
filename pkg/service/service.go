@@ -38,6 +38,7 @@ type Staff interface {
 	AddAccount(ctx context.Context, account domain.NewAccount) error
 	GetDataAccount(ctx context.Context, accountID primitive.ObjectID) ([]domain.AccountTable, error)
 	AddPack(ctx context.Context, accountID primitive.ObjectID, pack domain.AccountTable) error
+	UpgradePack(ctx context.Context, packID primitive.ObjectID, pack domain.AccountTable) error
 	DeleteAccount(ctx context.Context, accountID primitive.ObjectID) error
 }
 

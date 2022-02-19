@@ -43,6 +43,11 @@ func (s *StaffService) AddPack(ctx context.Context, accountID primitive.ObjectID
 	return err
 }
 
+func (s *StaffService) UpgradePack(ctx context.Context, packID primitive.ObjectID, pack domain.AccountTable) error {
+	err := s.repo.UpgradePack(ctx, packID, pack)
+	return err
+}
+
 func (s *StaffService) DeleteAccount(ctx context.Context, accountID primitive.ObjectID) error {
 	err := s.repo.DeleteAccount(ctx, accountID)
 	return err

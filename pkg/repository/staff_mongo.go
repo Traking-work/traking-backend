@@ -53,11 +53,20 @@ func (r *StaffRepo) GetDataAccount(ctx context.Context, accountID primitive.Obje
 }
 
 func (r *StaffRepo) AddPack(ctx context.Context, accountID primitive.ObjectID, pack domain.AccountTable) error {
-	_, err := r.db.Database().Collection(packAccountsCollection).InsertOne(ctx, bson.M{"account_id": accountID, "name": pack.Name, "count_task": pack.CountTask, "approved": pack.Approved})
+	_, err := r.db.Database().Collection(packAccountsCollection).InsertOne(ctx, bson.M{"account_id": accountID, "name": pack.Name, "count_task": pack.CountTask, "approved": pack.Approved, "date": pack.Date})
+	return err
+}
+
+func (r *StaffRepo) UpgradePack(ctx context.Context, packID primitive.ObjectID, pack domain.AccountTable) error {
+	_, err := r.db.Database().Collection(packAccountsCollection).UpdateOne(ctx, bson.M{"_id": packID}, bson.M{"$set": bson.M{"name": pack.Name, "count_task": pack.CountTask}})
 	return err
 }
 
 func (r *StaffRepo) DeleteAccount(ctx context.Context, accountID primitive.ObjectID) error {
 	_, err := r.db.DeleteOne(ctx, bson.M{"_id": accountID})
+	if err != nil {
+		return err
+	}
+	_, err = r.db.Database().Collection(packAccountsCollection).DeleteOne(ctx, bson.M{"account_id": accountID})
 	return err
 }

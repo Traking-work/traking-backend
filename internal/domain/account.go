@@ -13,7 +13,9 @@ type AccountData struct {
 }
 
 type AccountTable struct {
+	ID        primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	Name      string `json:"name"`
 	CountTask int `json:"count_task" bson:"count_task"`
 	Approved  bool `json:"approved"`
+	Date      string `json:"date"`
 }

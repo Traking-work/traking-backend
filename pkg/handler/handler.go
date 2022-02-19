@@ -59,11 +59,12 @@ func (h *Handler) InitRoutes() *gin.Engine {
 
 		staff := api.Group("/staff", h.userIdentity)
 		{
-			staff.GET("/:userID/get-accounts", h.GetAccounts)
-			staff.POST("/:userID/add-account", h.AddAccount)
-			staff.GET("/:userID/:accountID", h.GetDataAccount)
-			staff.POST("/:userID/:accountID/add-pack", h.AddPack)
-			staff.GET("/:userID/:accountID/delete-account", h.DeleteAccount)
+			staff.GET("/:ID/get-accounts", h.GetAccounts)
+			staff.POST("/:ID/add-account", h.AddAccount)
+			staff.GET("/:ID", h.GetDataAccount)
+			staff.POST("/:ID/add-pack", h.AddPack)
+			staff.POST("/:ID/upgrade-pack", h.UpgradePack)
+			staff.GET("/:ID/delete-account", h.DeleteAccount)
 		}
 	}
 
