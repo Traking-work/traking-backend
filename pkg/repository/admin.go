@@ -6,6 +6,7 @@ import (
 	"github.com/Traking-work/traking-backend.git/internal/domain"
 	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/bson"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type AdminRepo struct {
@@ -40,5 +41,15 @@ func (r *AdminRepo) AddUser(ctx context.Context, inp domain.UserData) error {
 		_, err = r.db.InsertOne(ctx, bson.M{"name": inp.Name, "username": inp.Username, "password": inp.Password, "position": inp.Position})
 	}
 
+	return err
+}
+
+func (r *AdminRepo) DeleteUser(ctx context.Context, userID primitive.ObjectID) error {
+	_, err := r.db.DeleteOne(ctx, bson.M{"_id": userID})
+	if err != nil {
+		return err
+	}
+
+	_, err = r.db.DeleteOne(ctx, bson.M{"teamlead": userID})
 	return err
 }

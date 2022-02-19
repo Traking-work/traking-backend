@@ -19,6 +19,7 @@ type Authorization interface {
 type Admin interface {
 	GetTeamLeads(ctx context.Context) ([]domain.UserData, error)
 	AddUser(ctx context.Context, inp domain.UserData) error
+	DeleteUser(ctx context.Context, userID primitive.ObjectID) error
 }
 
 type Teamlead interface{

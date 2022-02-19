@@ -10,6 +10,7 @@ import (
 	"github.com/Traking-work/traking-backend.git/pkg/repository"
 	"github.com/Traking-work/traking-backend.git/internal/domain"
 	"github.com/Traking-work/traking-backend.git/pkg/logging"
+	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
 type AdminService struct {
@@ -52,4 +53,9 @@ func generateHash(password string) string {
 	hash.Write([]byte(password))
 
 	return fmt.Sprintf("%x", hash.Sum([]byte(os.Getenv("SALT"))))
+}
+
+func (s *AdminService) DeleteUser(ctx context.Context, userID primitive.ObjectID) error {
+	err := s.repo.DeleteUser(ctx, userID)
+	return err
 }
