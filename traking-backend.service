@@ -1,0 +1,12 @@
+[Unit]
+Description=Traking work backend
+
+[Service]
+User=q
+Type=simple
+WorkingDirectory=/home/q/traking-work/traking-backend
+ExecStart=/home/q/traking-work/traking-backend/traking-backend
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
