@@ -80,8 +80,28 @@ func (r *AdminRepo) GetTeamLeads(ctx context.Context) ([]domain.UserDataAccount,
 	return teamleads, nil
 }
 
-func (r *AdminRepo) GetWorkers(ctx context.Context, userID primitive.ObjectID) ([]domain.UserData, error) {
-	var workers []domain.UserData
+func (r *AdminRepo) GetCountAccounts(ctx context.Context, userID primitive.ObjectID) (int, error) {
+	var accounts []domain.UserDataAccount
+	countAccounts := 0
+
+	cur, err := r.db.Database().Collection(accountsCollection).Find(ctx, bson.M{"user_id": userID})
+	if err != nil {
+		return 0, err
+	}
+
+	if err := cur.All(ctx, &accounts); err != nil {
+		return 0, err
+	}
+
+	for _ = range accounts {
+		countAccounts++
+	}
+
+	return countAccounts, nil
+}
+
+func (r *AdminRepo) GetWorkers(ctx context.Context, userID primitive.ObjectID) ([]domain.UserDataAccount, error) {
+	var workers []domain.UserDataAccount
 
 	cur, err := r.db.Find(ctx, bson.M{"teamlead": userID})
 	if err != nil {
@@ -90,6 +110,13 @@ func (r *AdminRepo) GetWorkers(ctx context.Context, userID primitive.ObjectID) (
 
 	if err := cur.All(ctx, &workers); err != nil {
 		return nil, err
+	}
+
+	for index, i := range workers {
+		countAccounts, err := r.GetCountAccounts(ctx, i.ID)
+		if err == nil {
+			workers[index].CountEmployee = countAccounts
+		}
 	}
 
 	return workers, nil

@@ -19,7 +19,7 @@ type Authorization interface {
 type Admin interface {
 	GetTeamLeads(ctx context.Context) ([]domain.UserDataAccount, error)
 	GetCountWorkers(ctx context.Context, userID primitive.ObjectID) (int, error)
-	GetWorkers(ctx context.Context, userID primitive.ObjectID) ([]domain.UserData, error)
+	GetWorkers(ctx context.Context, userID primitive.ObjectID) ([]domain.UserDataAccount, error)
 	AddUser(ctx context.Context, inp domain.UserData) error
 	DeleteUser(ctx context.Context, userID primitive.ObjectID) error
 }

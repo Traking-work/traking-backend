@@ -46,7 +46,7 @@ func (s *AdminService) GetCountWorkers(ctx context.Context, userID primitive.Obj
 	return countWorkers, err
 }
 
-func (s *AdminService) GetWorkers(ctx context.Context, userID primitive.ObjectID) ([]domain.UserData, error) {
+func (s *AdminService) GetWorkers(ctx context.Context, userID primitive.ObjectID) ([]domain.UserDataAccount, error) {
 	workers, err := s.repo.GetWorkers(ctx, userID)
 	return workers, err
 }

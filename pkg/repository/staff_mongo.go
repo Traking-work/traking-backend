@@ -18,10 +18,26 @@ func NewStaffRepo(db *mongo.Database) *StaffRepo {
 }
 
 func (r *StaffRepo) GetDataUser(ctx context.Context, userID primitive.ObjectID) (domain.UserDataAccount, error) {
-	var dataUser domain.UserDataAccount
+	var dataUserAcc domain.UserDataAccount
+	var dataUser domain.UserData
 
 	err := r.db.Database().Collection(usersCollection).FindOne(ctx, bson.M{"_id": userID}).Decode(&dataUser)
-	return dataUser, err
+	if err != nil {
+		return domain.UserDataAccount{}, err
+	}
+	dataUserAcc.ID = dataUser.ID
+	dataUserAcc.Name = dataUser.Name
+	dataUserAcc.Username = dataUser.Username
+
+	if dataUser.Position == "staff" {
+		err = r.db.Database().Collection(usersCollection).FindOne(ctx, bson.M{"_id": dataUser.TeamLead}).Decode(&dataUser)
+		if err != nil {
+			return domain.UserDataAccount{}, err
+		}
+		dataUserAcc.Director = dataUser.Name
+	}
+
+	return dataUserAcc, nil
 }
 
 func (r *StaffRepo) GetAccounts(ctx context.Context, userID primitive.ObjectID) ([]domain.AccountData, error) {
