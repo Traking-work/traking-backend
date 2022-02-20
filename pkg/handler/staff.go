@@ -8,6 +8,22 @@ import (
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
+func (h *Handler) GetDataUser(c *gin.Context) {
+	userID, err := primitive.ObjectIDFromHex(c.Param("ID"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	dataUser, err := h.services.Staff.GetDataUser(c, userID)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, dataUser)
+}
+
 func (h *Handler) GetAccounts(c *gin.Context) {
 	userID, err := primitive.ObjectIDFromHex(c.Param("ID"))
 	if err != nil {
@@ -31,7 +47,7 @@ func (h *Handler) AddAccount(c *gin.Context) {
 		return
 	}
 
-	var inp domain.NewAccount
+	var inp domain.AccountData
 	if err := c.BindJSON(&inp); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
 		return
@@ -51,19 +67,28 @@ func (h *Handler) GetDataAccount(c *gin.Context) {
 		return
 	}
 
-	var inp domain.AccountTable
+	var inp domain.AccountPack
 	if err := c.BindJSON(&inp); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
 		return
 	}
 
-	dataAccount, err := h.services.Staff.GetDataAccount(c, accountID, inp.Date)
+	dataAccount, err := h.services.Staff.GetDataAccount(c, accountID)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	c.JSON(http.StatusOK, dataAccount)
+	packsAccount, err := h.services.Staff.GetPacksAccount(c, accountID, inp.Date)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"packsAccount": packsAccount,
+		"dataAccount": dataAccount,
+	})
 }
 
 func (h *Handler) AddPack(c *gin.Context) {
@@ -73,7 +98,7 @@ func (h *Handler) AddPack(c *gin.Context) {
 		return
 	}
 
-	var inp domain.AccountTable
+	var inp domain.AccountPack
 	if err := c.BindJSON(&inp); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
 		return
@@ -92,7 +117,7 @@ func (h *Handler) UpgradePack(c *gin.Context) {
 		return
 	}
 
-	var inp domain.AccountTable
+	var inp domain.AccountPack
 	if err := c.BindJSON(&inp); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
 		return

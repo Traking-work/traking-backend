@@ -23,27 +23,37 @@ func NewStaffService(repo repository.Staff) *StaffService {
 	return &StaffService{repo: repo}
 }
 
+func (s *StaffService) GetDataUser(ctx context.Context, userID primitive.ObjectID) (domain.UserDataAccount, error) {
+	dataUser, err := s.repo.GetDataUser(ctx, userID)
+	return dataUser, err
+}
+
 func (s *StaffService) GetAccounts(ctx context.Context, userID primitive.ObjectID) ([]domain.AccountData, error) {
 	accounts, err := s.repo.GetAccounts(ctx, userID)
 	return accounts, err
 }
 
-func (s *StaffService) AddAccount(ctx context.Context, account domain.NewAccount) error {
+func (s *StaffService) AddAccount(ctx context.Context, account domain.AccountData) error {
 	err := s.repo.AddAccount(ctx, account)
 	return err
 }
 
-func (s *StaffService) GetDataAccount(ctx context.Context, accountID primitive.ObjectID, date string) ([]domain.AccountTable, error) {
-	dataAccount, err := s.repo.GetDataAccount(ctx, accountID, date)
+func (s *StaffService) GetPacksAccount(ctx context.Context, accountID primitive.ObjectID, date string) ([]domain.AccountPack, error) {
+	packsAccount, err := s.repo.GetPacksAccount(ctx, accountID, date)
+	return packsAccount, err
+}
+
+func (s *StaffService) GetDataAccount(ctx context.Context, accountID primitive.ObjectID) (domain.AccountData, error) {
+	dataAccount, err := s.repo.GetDataAccount(ctx, accountID)
 	return dataAccount, err
 }
 
-func (s *StaffService) AddPack(ctx context.Context, accountID primitive.ObjectID, pack domain.AccountTable) error {
+func (s *StaffService) AddPack(ctx context.Context, accountID primitive.ObjectID, pack domain.AccountPack) error {
 	err := s.repo.AddPack(ctx, accountID, pack)
 	return err
 }
 
-func (s *StaffService) UpgradePack(ctx context.Context, packID primitive.ObjectID, pack domain.AccountTable) error {
+func (s *StaffService) UpgradePack(ctx context.Context, packID primitive.ObjectID, pack domain.AccountPack) error {
 	err := s.repo.UpgradePack(ctx, packID, pack)
 	return err
 }

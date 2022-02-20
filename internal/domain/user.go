@@ -22,3 +22,9 @@ type UserSelect struct {
 	Value primitive.ObjectID `json:"value" binding:"required"`
 	Name  string `json:"name" binding:"required"`
 }
+
+type UserDataAccount struct {
+	ID       primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	Name     string `json:"name" binding:"required"`
+	Username string `json:"username" binding:"required"`
+}

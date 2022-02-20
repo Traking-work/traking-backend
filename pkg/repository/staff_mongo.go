@@ -17,6 +17,13 @@ func NewStaffRepo(db *mongo.Database) *StaffRepo {
 	return &StaffRepo{db: db.Collection(accountsCollection)}
 }
 
+func (r *StaffRepo) GetDataUser(ctx context.Context, userID primitive.ObjectID) (domain.UserDataAccount, error) {
+	var dataUser domain.UserDataAccount
+
+	err := r.db.Database().Collection(usersCollection).FindOne(ctx, bson.M{"_id": userID}).Decode(&dataUser)
+	return dataUser, err
+}
+
 func (r *StaffRepo) GetAccounts(ctx context.Context, userID primitive.ObjectID) ([]domain.AccountData, error) {
 	var accounts []domain.AccountData
 
@@ -32,32 +39,39 @@ func (r *StaffRepo) GetAccounts(ctx context.Context, userID primitive.ObjectID) 
 	return accounts, nil
 }
 	
-func (r *StaffRepo) AddAccount(ctx context.Context, account domain.NewAccount) error {
+func (r *StaffRepo) AddAccount(ctx context.Context, account domain.AccountData) error {
 	_, err := r.db.InsertOne(ctx, account)
 	return err
 }
 
-func (r *StaffRepo) GetDataAccount(ctx context.Context, accountID primitive.ObjectID, date string) ([]domain.AccountTable, error) {
-	var dataAccount []domain.AccountTable
+func (r *StaffRepo) GetPacksAccount(ctx context.Context, accountID primitive.ObjectID, date string) ([]domain.AccountPack, error) {
+	var packsAccount []domain.AccountPack
 
 	cur, err := r.db.Database().Collection(packAccountsCollection).Find(ctx, bson.M{"account_id": accountID, "date": date})
 	if err != nil {
 		return nil, err
 	}
 
-	if err := cur.All(ctx, &dataAccount); err != nil {
+	if err := cur.All(ctx, &packsAccount); err != nil {
 		return nil, err
 	}
 
-	return dataAccount, nil
+	return packsAccount, nil
 }
 
-func (r *StaffRepo) AddPack(ctx context.Context, accountID primitive.ObjectID, pack domain.AccountTable) error {
+func (r *StaffRepo) GetDataAccount(ctx context.Context, accountID primitive.ObjectID) (domain.AccountData, error) {
+	var dataAccount domain.AccountData
+
+	err := r.db.FindOne(ctx, bson.M{"_id": accountID}).Decode(&dataAccount)
+	return dataAccount, err
+}
+
+func (r *StaffRepo) AddPack(ctx context.Context, accountID primitive.ObjectID, pack domain.AccountPack) error {
 	_, err := r.db.Database().Collection(packAccountsCollection).InsertOne(ctx, bson.M{"account_id": accountID, "name": pack.Name, "count_task": pack.CountTask, "approved": pack.Approved, "date": pack.Date})
 	return err
 }
 
-func (r *StaffRepo) UpgradePack(ctx context.Context, packID primitive.ObjectID, pack domain.AccountTable) error {
+func (r *StaffRepo) UpgradePack(ctx context.Context, packID primitive.ObjectID, pack domain.AccountPack) error {
 	_, err := r.db.Database().Collection(packAccountsCollection).UpdateOne(ctx, bson.M{"_id": packID}, bson.M{"$set": bson.M{"name": pack.Name, "count_task": pack.CountTask}})
 	return err
 }

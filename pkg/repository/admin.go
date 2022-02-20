@@ -66,5 +66,15 @@ func (r *AdminRepo) DeleteUser(ctx context.Context, userID primitive.ObjectID) e
 	}
 
 	_, err = r.db.DeleteOne(ctx, bson.M{"teamlead": userID})
-	return err
+	if err != nil {
+		return err
+	}
+
+	_, err = r.db.Database().Collection(accountsCollection).DeleteOne(ctx, bson.M{"user_id": userID})
+	if err != nil {
+		return err
+	}
+
+	//_, err = r.db.Database().Collection(packAccountsCollection).DeleteOne(ctx, bson.M{"teamlead": userID})
+	return nil
 }
