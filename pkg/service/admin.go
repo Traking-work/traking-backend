@@ -26,7 +26,7 @@ func NewAdminService(repo repository.Admin) *AdminService {
 	return &AdminService{repo: repo}
 }
 
-func (s *AdminService) GetTeamLeads(ctx context.Context) ([]domain.UserData, []domain.UserSelect, error) {
+func (s *AdminService) GetTeamLeads(ctx context.Context) ([]domain.UserDataAccount, []domain.UserSelect, error) {
 	teamleads, err := s.repo.GetTeamLeads(ctx)
 	if err != nil {
 		return nil, nil, err
@@ -39,6 +39,11 @@ func (s *AdminService) GetTeamLeads(ctx context.Context) ([]domain.UserData, []d
 	}
 
 	return teamleads, teamleadsCreate, nil
+}
+
+func (s *AdminService) GetCountWorkers(ctx context.Context, userID primitive.ObjectID) (int, error) {
+	countWorkers, err := s.repo.GetCountWorkers(ctx, userID)
+	return countWorkers, err
 }
 
 func (s *AdminService) GetWorkers(ctx context.Context, userID primitive.ObjectID) ([]domain.UserData, error) {

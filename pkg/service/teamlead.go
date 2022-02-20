@@ -23,7 +23,7 @@ func NewTeamleadService(repo repository.Teamlead) *TeamleadService {
 	return &TeamleadService{repo: repo}
 }
 
-func (s *TeamleadService) GetStaff(ctx context.Context, userID primitive.ObjectID) ([]domain.UserData, error) {
+func (s *TeamleadService) GetStaff(ctx context.Context, userID primitive.ObjectID) ([]domain.UserDataAccount, error) {
 	staff, err := s.repo.GetStaff(ctx, userID)
 	return staff, err
 }

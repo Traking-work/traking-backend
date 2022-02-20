@@ -23,14 +23,15 @@ type Authorization interface {
 }
 
 type Admin interface {
-	GetTeamLeads(ctx context.Context) ([]domain.UserData, []domain.UserSelect, error)
+	GetTeamLeads(ctx context.Context) ([]domain.UserDataAccount, []domain.UserSelect, error)
+	GetCountWorkers(ctx context.Context, userID primitive.ObjectID) (int, error)
 	GetWorkers(ctx context.Context, userID primitive.ObjectID) ([]domain.UserData, error)
 	AddUser(ctx context.Context, inp domain.UserData) error
 	DeleteUser(ctx context.Context, userID primitive.ObjectID) error
 }
 
 type Teamlead interface {
-	GetStaff(ctx context.Context, userID primitive.ObjectID) ([]domain.UserData, error)
+	GetStaff(ctx context.Context, userID primitive.ObjectID) ([]domain.UserDataAccount, error)
 }
 
 type Staff interface {

@@ -24,7 +24,8 @@ type UserSelect struct {
 }
 
 type UserDataAccount struct {
-	ID       primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	Name     string `json:"name" binding:"required"`
-	Username string `json:"username" binding:"required"`
+	ID            primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	Name          string `json:"name" binding:"required"`
+	Username      string `json:"username" binding:"required"`
+	CountEmployee int `json:"count_employee"`
 }

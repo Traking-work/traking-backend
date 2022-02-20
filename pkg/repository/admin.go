@@ -18,8 +18,48 @@ func NewAdminRepo(db *mongo.Database) *AdminRepo {
 	return &AdminRepo{db: db.Collection(usersCollection)}
 }
 
-func (r *AdminRepo) GetTeamLeads(ctx context.Context) ([]domain.UserData, error) {
-	var teamleads []domain.UserData
+func (r *AdminRepo) GetCountWorkers(ctx context.Context, userID primitive.ObjectID) (int, error) {
+	var workers []domain.UserData
+	countWorkers := 0
+
+	cur, err := r.db.Find(ctx, bson.M{"teamlead": userID})
+	if err != nil {
+		return 0, err
+	}
+
+	if err := cur.All(ctx, &workers); err != nil {
+		return 0, err
+	}
+
+	for _ = range workers {
+		countWorkers++
+	}
+
+	return countWorkers, nil
+}
+
+func (r *AdminRepo) GetCountStaff(ctx context.Context, userID primitive.ObjectID) (int, error) {
+	var teamleads []domain.UserDataAccount
+	countWorkers := 0
+
+	cur, err := r.db.Find(ctx, bson.M{"teamlead": userID})
+	if err != nil {
+		return 0, err
+	}
+
+	if err := cur.All(ctx, &teamleads); err != nil {
+		return 0, err
+	}
+
+	for _ = range teamleads {
+		countWorkers++
+	}
+
+	return countWorkers, nil
+}
+
+func (r *AdminRepo) GetTeamLeads(ctx context.Context) ([]domain.UserDataAccount, error) {
+	var teamleads []domain.UserDataAccount
 
 	cur, err := r.db.Find(ctx, bson.M{"position": "teamlead"})
 	if err != nil {
@@ -28,6 +68,13 @@ func (r *AdminRepo) GetTeamLeads(ctx context.Context) ([]domain.UserData, error)
 
 	if err := cur.All(ctx, &teamleads); err != nil {
 		return nil, err
+	}
+
+	for index, i := range teamleads {
+		countWorkers, err := r.GetCountStaff(ctx, i.ID)
+		if err == nil {
+			teamleads[index].CountEmployee = countWorkers
+		}
 	}
 
 	return teamleads, nil

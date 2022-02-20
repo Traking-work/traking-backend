@@ -22,6 +22,22 @@ func (h *Handler) GetTeamLeads(c *gin.Context) {
 	})
 }
 
+func (h *Handler) GetCountWorkers(c *gin.Context) {
+	userID, err := primitive.ObjectIDFromHex(c.Param("userID"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	countWorkers, err := h.services.Admin.GetCountWorkers(c, userID)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	c.JSON(http.StatusOK, countWorkers)
+}
+
 func (h *Handler) GetWorkers(c *gin.Context) {
 	userID, err := primitive.ObjectIDFromHex(c.Param("userID"))
 	if err != nil {
