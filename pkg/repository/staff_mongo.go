@@ -86,6 +86,7 @@ func (r *StaffRepo) DeleteAccount(ctx context.Context, accountID primitive.Objec
 	if err != nil {
 		return err
 	}
+	
 	_, err = r.db.Database().Collection(packAccountsCollection).DeleteOne(ctx, bson.M{"account_id": accountID})
 	return err
 }

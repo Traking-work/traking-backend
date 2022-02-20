@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"errors"
 
 	"github.com/gin-gonic/gin"
 	"github.com/Traking-work/traking-backend.git/internal/domain"
@@ -46,6 +47,10 @@ func (h *Handler) AddUser(c *gin.Context) {
 
 	err := h.services.Admin.AddUser(c, inp)
 	if err != nil {
+		if errors.Is(err, domain.ErrReplayUsername) {
+			c.JSON(http.StatusOK, "Такой username уже используется")
+			return
+		}
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
