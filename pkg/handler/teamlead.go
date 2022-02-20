@@ -20,5 +20,7 @@ func (h *Handler) GetStaff(c *gin.Context) {
 		return
 	}
 
+	h.logger.Infof("Get staff %s", c.Param("userID"))
+
 	c.JSON(http.StatusOK, staff)
 }

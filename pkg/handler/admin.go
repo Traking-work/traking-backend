@@ -16,6 +16,8 @@ func (h *Handler) GetTeamLeads(c *gin.Context) {
 		return
 	}
 
+	h.logger.Info("Get teamleads")
+
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"teamleads": teamleads,
 		"teamleadCreate": teamleadCreate,
@@ -35,6 +37,8 @@ func (h *Handler) GetCountWorkers(c *gin.Context) {
 		return
 	}
 
+	h.logger.Infof("Get count workers %s", c.Param("userID"))
+
 	c.JSON(http.StatusOK, countWorkers)
 }
 
@@ -50,6 +54,8 @@ func (h *Handler) GetWorkers(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
+
+	h.logger.Infof("Get workers %s", c.Param("userID"))
 
 	c.JSON(http.StatusOK, workers)
 }
@@ -70,6 +76,8 @@ func (h *Handler) AddUser(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
+
+	h.logger.Infof("Add user %s", inp.Username)
 }
 
 func (h *Handler) DeleteUser(c *gin.Context) {
@@ -83,4 +91,6 @@ func (h *Handler) DeleteUser(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
+
+	h.logger.Infof("Delete user %s", c.Param("userID"))
 }

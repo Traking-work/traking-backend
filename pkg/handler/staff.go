@@ -21,6 +21,8 @@ func (h *Handler) GetDataUser(c *gin.Context) {
 		return
 	}
 
+	h.logger.Infof("Get data user %s", c.Param("ID"))
+
 	c.JSON(http.StatusOK, dataUser)
 }
 
@@ -36,6 +38,8 @@ func (h *Handler) GetAccounts(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
+
+	h.logger.Infof("Get accounts %s", c.Param("ID"))
 
 	c.JSON(http.StatusOK, accounts)
 }
@@ -58,6 +62,8 @@ func (h *Handler) AddAccount(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
+
+	h.logger.Infof("Add account %s", c.Param("ID"))
 }
 
 func (h *Handler) GetDataAccount(c *gin.Context) {
@@ -85,6 +91,8 @@ func (h *Handler) GetDataAccount(c *gin.Context) {
 		return
 	}
 
+	h.logger.Infof("Get data account %s", c.Param("ID"))
+
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"packsAccount": packsAccount,
 		"dataAccount": dataAccount,
@@ -108,6 +116,8 @@ func (h *Handler) AddPack(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
+
+	h.logger.Infof("Add pack %s", c.Param("ID"))
 }
 
 func (h *Handler) UpgradePack(c *gin.Context) {
@@ -127,6 +137,8 @@ func (h *Handler) UpgradePack(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
+
+	h.logger.Infof("Update pack %s", c.Param("ID"))
 }
 
 func (h *Handler) ApprovePack(c *gin.Context) {
@@ -140,6 +152,8 @@ func (h *Handler) ApprovePack(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
+
+	h.logger.Infof("Approve pack %s", c.Param("ID"))
 }
 
 func (h *Handler) DeleteAccount(c *gin.Context) {
@@ -153,4 +167,6 @@ func (h *Handler) DeleteAccount(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
+
+	h.logger.Infof("Delete account %s", c.Param("ID"))
 }
