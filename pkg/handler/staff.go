@@ -2,9 +2,10 @@ package handler
 
 import (
 	"net/http"
+	"time"
 
-	"github.com/gin-gonic/gin"
 	"github.com/Traking-work/traking-backend.git/internal/domain"
+	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -57,6 +58,7 @@ func (h *Handler) AddAccount(c *gin.Context) {
 		return
 	}
 	inp.UserID = userID
+	inp.CreateDate = time.Now()
 
 	if err := h.services.Staff.AddAccount(c, inp); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
@@ -95,7 +97,7 @@ func (h *Handler) GetDataAccount(c *gin.Context) {
 
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"packsAccount": packsAccount,
-		"dataAccount": dataAccount,
+		"dataAccount":  dataAccount,
 	})
 }
 

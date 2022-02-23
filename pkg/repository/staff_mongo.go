@@ -2,11 +2,12 @@ package repository
 
 import (
 	"context"
+	"time"
 
 	"github.com/Traking-work/traking-backend.git/internal/domain"
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type StaffRepo struct {
@@ -43,7 +44,7 @@ func (r *StaffRepo) GetDataUser(ctx context.Context, userID primitive.ObjectID) 
 func (r *StaffRepo) GetAccounts(ctx context.Context, userID primitive.ObjectID) ([]domain.AccountData, error) {
 	var accounts []domain.AccountData
 
-	cur, err := r.db.Find(ctx, bson.M{"user_id": userID})
+	cur, err := r.db.Find(ctx, bson.M{"user_id": userID, "create_date": bson.M{"$lte": time.Now()}})
 	if err != nil {
 		return nil, err
 	}
@@ -54,7 +55,7 @@ func (r *StaffRepo) GetAccounts(ctx context.Context, userID primitive.ObjectID) 
 
 	return accounts, nil
 }
-	
+
 func (r *StaffRepo) AddAccount(ctx context.Context, account domain.AccountData) error {
 	_, err := r.db.InsertOne(ctx, account)
 	return err
@@ -98,11 +99,14 @@ func (r *StaffRepo) ApprovePack(ctx context.Context, packID primitive.ObjectID) 
 }
 
 func (r *StaffRepo) DeleteAccount(ctx context.Context, accountID primitive.ObjectID) error {
-	_, err := r.db.DeleteOne(ctx, bson.M{"_id": accountID})
-	if err != nil {
-		return err
-	}
-	
-	_, err = r.db.Database().Collection(packAccountsCollection).DeleteOne(ctx, bson.M{"account_id": accountID})
+	//_, err := r.db.DeleteOne(ctx, bson.M{"_id": accountID})
+	//if err != nil {
+	//	return err
+	//}
+
+	//_, err = r.db.Database().Collection(packAccountsCollection).DeleteOne(ctx, bson.M{"account_id": accountID})
+	//return err
+
+	_, err := r.db.UpdateOne(ctx, bson.M{"_id": accountID}, bson.M{"$set": bson.M{"delete_date": time.Now()}})
 	return err
 }
