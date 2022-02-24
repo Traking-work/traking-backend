@@ -2,11 +2,12 @@ package service
 
 import (
 	"context"
+	"time"
 
-	"github.com/joho/godotenv"
-	"github.com/Traking-work/traking-backend.git/pkg/repository"
 	"github.com/Traking-work/traking-backend.git/internal/domain"
 	"github.com/Traking-work/traking-backend.git/pkg/logging"
+	"github.com/Traking-work/traking-backend.git/pkg/repository"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -28,8 +29,8 @@ func (s *StaffService) GetDataUser(ctx context.Context, userID primitive.ObjectI
 	return dataUser, err
 }
 
-func (s *StaffService) GetAccounts(ctx context.Context, userID primitive.ObjectID) ([]domain.AccountData, error) {
-	accounts, err := s.repo.GetAccounts(ctx, userID)
+func (s *StaffService) GetAccounts(ctx context.Context, userID primitive.ObjectID, date time.Time) ([]domain.AccountData, error) {
+	accounts, err := s.repo.GetAccounts(ctx, userID, date)
 	return accounts, err
 }
 

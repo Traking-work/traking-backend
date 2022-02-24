@@ -2,6 +2,7 @@ package repository
 
 import (
 	"context"
+	"time"
 
 	"github.com/Traking-work/traking-backend.git/internal/domain"
 	"github.com/spf13/viper"
@@ -24,14 +25,14 @@ type Admin interface {
 	DeleteUser(ctx context.Context, userID primitive.ObjectID) error
 }
 
-type Teamlead interface{
+type Teamlead interface {
 	GetData(ctx context.Context, userID primitive.ObjectID) (domain.UserData, error)
 	GetStaff(ctx context.Context, userID primitive.ObjectID) ([]domain.UserDataAccount, error)
 }
 
 type Staff interface {
 	GetDataUser(ctx context.Context, userID primitive.ObjectID) (domain.UserDataAccount, error)
-	GetAccounts(ctx context.Context, userID primitive.ObjectID) ([]domain.AccountData, error)
+	GetAccounts(ctx context.Context, userID primitive.ObjectID, date time.Time) ([]domain.AccountData, error)
 	AddAccount(ctx context.Context, account domain.AccountData) error
 	GetPacksAccount(ctx context.Context, accountID primitive.ObjectID, date string) ([]domain.AccountPack, error)
 	GetDataAccount(ctx context.Context, accountID primitive.ObjectID) (domain.AccountData, error)
@@ -51,8 +52,8 @@ type Repository struct {
 func NewRepository(db *mongo.Client) *Repository {
 	return &Repository{
 		Authorization: NewAuthorizationRepo(db.Database(viper.GetString("mongo.databaseName"))),
-		Admin: 		   NewAdminRepo(db.Database(viper.GetString("mongo.databaseName"))),
+		Admin:         NewAdminRepo(db.Database(viper.GetString("mongo.databaseName"))),
 		Teamlead:      NewTeamleadRepo(db.Database(viper.GetString("mongo.databaseName"))),
-		Staff: 		   NewStaffRepo(db.Database(viper.GetString("mongo.databaseName"))),
+		Staff:         NewStaffRepo(db.Database(viper.GetString("mongo.databaseName"))),
 	}
 }

@@ -34,7 +34,13 @@ func (h *Handler) GetAccounts(c *gin.Context) {
 		return
 	}
 
-	accounts, err := h.services.Staff.GetAccounts(c, userID)
+	var inp domain.Date
+	if err := c.BindJSON(&inp); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
+		return
+	}
+
+	accounts, err := h.services.Staff.GetAccounts(c, userID, inp.Date)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -59,6 +65,7 @@ func (h *Handler) AddAccount(c *gin.Context) {
 	}
 	inp.UserID = userID
 	inp.CreateDate = time.Now()
+	inp.StatusDelete = false
 
 	if err := h.services.Staff.AddAccount(c, inp); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())

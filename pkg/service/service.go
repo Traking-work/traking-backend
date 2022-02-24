@@ -2,9 +2,10 @@ package service
 
 import (
 	"context"
+	"time"
 
-	"github.com/Traking-work/traking-backend.git/pkg/repository"
 	"github.com/Traking-work/traking-backend.git/internal/domain"
+	"github.com/Traking-work/traking-backend.git/pkg/repository"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -36,7 +37,7 @@ type Teamlead interface {
 
 type Staff interface {
 	GetDataUser(ctx context.Context, userID primitive.ObjectID) (domain.UserDataAccount, error)
-	GetAccounts(ctx context.Context, userID primitive.ObjectID) ([]domain.AccountData, error)
+	GetAccounts(ctx context.Context, userID primitive.ObjectID, date time.Time) ([]domain.AccountData, error)
 	AddAccount(ctx context.Context, account domain.AccountData) error
 	GetPacksAccount(ctx context.Context, accountID primitive.ObjectID, date string) ([]domain.AccountPack, error)
 	GetDataAccount(ctx context.Context, accountID primitive.ObjectID) (domain.AccountData, error)
@@ -56,8 +57,8 @@ type Service struct {
 func NewService(repos *repository.Repository) *Service {
 	return &Service{
 		Authorization: NewAuthorizationService(repos.Authorization),
-		Admin: 		   NewAdminService(repos.Admin),
-		Teamlead: 	   NewTeamleadService(repos.Teamlead),
-		Staff: 		   NewStaffService(repos.Staff),
+		Admin:         NewAdminService(repos.Admin),
+		Teamlead:      NewTeamleadService(repos.Teamlead),
+		Staff:         NewStaffService(repos.Staff),
 	}
 }

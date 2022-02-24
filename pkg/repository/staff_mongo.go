@@ -41,10 +41,11 @@ func (r *StaffRepo) GetDataUser(ctx context.Context, userID primitive.ObjectID) 
 	return dataUserAcc, nil
 }
 
-func (r *StaffRepo) GetAccounts(ctx context.Context, userID primitive.ObjectID) ([]domain.AccountData, error) {
+func (r *StaffRepo) GetAccounts(ctx context.Context, userID primitive.ObjectID, date time.Time) ([]domain.AccountData, error) {
 	var accounts []domain.AccountData
+	var accountsDate []domain.AccountData
 
-	cur, err := r.db.Find(ctx, bson.M{"user_id": userID, "create_date": bson.M{"$lte": time.Now()}})
+	cur, err := r.db.Find(ctx, bson.M{"user_id": userID})
 	if err != nil {
 		return nil, err
 	}
@@ -53,7 +54,19 @@ func (r *StaffRepo) GetAccounts(ctx context.Context, userID primitive.ObjectID) 
 		return nil, err
 	}
 
-	return accounts, nil
+	for _, account := range accounts {
+		if account.CreateDate.Day() <= date.Day() {
+			if account.StatusDelete {
+				if account.DeleteDate.Day() >= date.Day() {
+					accountsDate = append(accountsDate, account)
+				}
+			} else {
+				accountsDate = append(accountsDate, account)
+			}
+		}
+	}
+
+	return accountsDate, nil
 }
 
 func (r *StaffRepo) AddAccount(ctx context.Context, account domain.AccountData) error {
@@ -107,6 +120,6 @@ func (r *StaffRepo) DeleteAccount(ctx context.Context, accountID primitive.Objec
 	//_, err = r.db.Database().Collection(packAccountsCollection).DeleteOne(ctx, bson.M{"account_id": accountID})
 	//return err
 
-	_, err := r.db.UpdateOne(ctx, bson.M{"_id": accountID}, bson.M{"$set": bson.M{"delete_date": time.Now()}})
+	_, err := r.db.UpdateOne(ctx, bson.M{"_id": accountID}, bson.M{"$set": bson.M{"status_delete": true, "delete_date": time.Now()}})
 	return err
 }

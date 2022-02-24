@@ -3,11 +3,11 @@ package handler
 import (
 	"os"
 
+	"github.com/Traking-work/traking-backend.git/pkg/logging"
+	"github.com/Traking-work/traking-backend.git/pkg/service"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/Traking-work/traking-backend.git/pkg/logging"
-	"github.com/Traking-work/traking-backend.git/pkg/service"
 )
 
 type Handler struct {
@@ -61,7 +61,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 		staff := api.Group("/staff", h.userIdentity)
 		{
 			staff.GET("/:ID/get-data-user", h.GetDataUser)
-			staff.GET("/:ID/get-accounts", h.GetAccounts)
+			staff.POST("/:ID/get-accounts", h.GetAccounts)
 			staff.POST("/:ID/add-account", h.AddAccount)
 			staff.POST("/:ID/get-data-account", h.GetDataAccount)
 			staff.POST("/:ID/add-pack", h.AddPack)
