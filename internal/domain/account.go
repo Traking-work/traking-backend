@@ -19,6 +19,7 @@ type AccountPack struct {
 	ID        primitive.ObjectID `json:"id" bson:"_id"`
 	Name      string             `json:"name"`
 	CountTask int                `json:"count_task" bson:"count_task"`
+	Payment   float32            `json:"payment"`
 	Approved  bool               `json:"approved"`
 	Date      string             `json:"date"`
 }

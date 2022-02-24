@@ -57,7 +57,7 @@ func (r *StaffRepo) GetAccounts(ctx context.Context, userID primitive.ObjectID, 
 	for _, account := range accounts {
 		if account.CreateDate.Day() <= date.Day() {
 			if account.StatusDelete {
-				if account.DeleteDate.Day() >= date.Day() {
+				if account.DeleteDate.Day() > date.Day() {
 					accountsDate = append(accountsDate, account)
 				}
 			} else {
@@ -97,12 +97,12 @@ func (r *StaffRepo) GetDataAccount(ctx context.Context, accountID primitive.Obje
 }
 
 func (r *StaffRepo) AddPack(ctx context.Context, accountID primitive.ObjectID, pack domain.AccountPack) error {
-	_, err := r.db.Database().Collection(packAccountsCollection).InsertOne(ctx, bson.M{"account_id": accountID, "name": pack.Name, "count_task": pack.CountTask, "approved": pack.Approved, "date": pack.Date})
+	_, err := r.db.Database().Collection(packAccountsCollection).InsertOne(ctx, bson.M{"account_id": accountID, "name": pack.Name, "count_task": pack.CountTask, "payment": pack.Payment, "approved": pack.Approved, "date": pack.Date})
 	return err
 }
 
 func (r *StaffRepo) UpgradePack(ctx context.Context, packID primitive.ObjectID, pack domain.AccountPack) error {
-	_, err := r.db.Database().Collection(packAccountsCollection).UpdateOne(ctx, bson.M{"_id": packID}, bson.M{"$set": bson.M{"name": pack.Name, "count_task": pack.CountTask}})
+	_, err := r.db.Database().Collection(packAccountsCollection).UpdateOne(ctx, bson.M{"_id": packID}, bson.M{"$set": bson.M{"name": pack.Name, "count_task": pack.CountTask, "payment": pack.Payment}})
 	return err
 }
 
