@@ -33,6 +33,7 @@ type Teamlead interface {
 type Staff interface {
 	GetDataUser(ctx context.Context, userID primitive.ObjectID) (domain.UserDataAccount, error)
 	GetAccounts(ctx context.Context, userID primitive.ObjectID, date time.Time) ([]domain.AccountData, error)
+	GetAllAccounts(ctx context.Context, userID primitive.ObjectID) ([]domain.AccountData, error)
 	AddAccount(ctx context.Context, account domain.AccountData) error
 	GetPacksAccount(ctx context.Context, accountID primitive.ObjectID, date string) ([]domain.AccountPack, error)
 	GetDataAccount(ctx context.Context, accountID primitive.ObjectID) (domain.AccountData, error)
@@ -40,6 +41,8 @@ type Staff interface {
 	UpgradePack(ctx context.Context, packID primitive.ObjectID, pack domain.AccountPack) error
 	ApprovePack(ctx context.Context, packID primitive.ObjectID) error
 	DeleteAccount(ctx context.Context, accountID primitive.ObjectID) error
+	GetStaff(ctx context.Context, userID primitive.ObjectID) ([]domain.UserDataAccount, error)
+	GetTeamLeads(ctx context.Context) ([]domain.UserDataAccount, error)
 }
 
 type Repository struct {

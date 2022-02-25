@@ -10,6 +10,7 @@ type AccountData struct {
 	ID           primitive.ObjectID `json:"id" bson:"_id,omitempty"`
 	Name         string             `json:"name" binding:"required"`
 	UserID       primitive.ObjectID `json:"user_id" bson:"user_id"`
+	Income       float64            `json:"income"`
 	CreateDate   time.Time          `json:"create_date" bson:"create_date"`
 	StatusDelete bool               `json:"status_delete" bson:"status_delete"`
 	DeleteDate   time.Time          `json:"delete_date" bson:"delete_date"`

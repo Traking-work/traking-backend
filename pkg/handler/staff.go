@@ -100,6 +100,12 @@ func (h *Handler) GetDataAccount(c *gin.Context) {
 		return
 	}
 
+	income := 0.0
+	for _, pack := range packsAccount {
+		income += float64(pack.CountTask) * float64(pack.Payment)
+	}
+	dataAccount.Income = income
+
 	h.logger.Infof("Get data account %s", c.Param("ID"))
 
 	c.JSON(http.StatusOK, map[string]interface{}{
@@ -178,4 +184,82 @@ func (h *Handler) DeleteAccount(c *gin.Context) {
 	}
 
 	h.logger.Infof("Delete account %s", c.Param("ID"))
+}
+
+func (h *Handler) GetParamsMain(c *gin.Context) {
+	userID, err := primitive.ObjectIDFromHex(c.Param("ID"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	var inp domain.DataForParams
+	if err := c.BindJSON(&inp); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
+		return
+	}
+
+	var income float64
+
+	if inp.Position == "staff" {
+		income, err = h.services.Staff.GetParamsMainStaff(c, userID)
+		if err != nil {
+			newErrorResponse(c, http.StatusBadRequest, err.Error())
+			return
+		}
+	} else if inp.Position == "teamlead" {
+		income, err = h.services.Staff.GetParamsMainTeamlead(c, userID)
+		if err != nil {
+			newErrorResponse(c, http.StatusBadRequest, err.Error())
+			return
+		}
+	} else {
+		income, err = h.services.Staff.GetParamsMainAdmin(c)
+		if err != nil {
+			newErrorResponse(c, http.StatusBadRequest, err.Error())
+			return
+		}
+	}
+
+	h.logger.Infof("Get params main staff %s", c.Param("ID"))
+	c.JSON(http.StatusOK, income)
+}
+
+func (h *Handler) GetParamsDate(c *gin.Context) {
+	userID, err := primitive.ObjectIDFromHex(c.Param("ID"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	var inp domain.DataForParams
+	if err := c.BindJSON(&inp); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
+		return
+	}
+
+	var income float64
+
+	if inp.Position == "staff" {
+		income, err = h.services.Staff.GetParamsDateStaff(c, userID, inp.Date)
+		if err != nil {
+			newErrorResponse(c, http.StatusBadRequest, err.Error())
+			return
+		}
+	} else if inp.Position == "teamlead" {
+		income, err = h.services.Staff.GetParamsDateTeamlead(c, userID, inp.Date)
+		if err != nil {
+			newErrorResponse(c, http.StatusBadRequest, err.Error())
+			return
+		}
+	} else {
+		income, err = h.services.Staff.GetParamsDateAdmin(c, inp.Date)
+		if err != nil {
+			newErrorResponse(c, http.StatusBadRequest, err.Error())
+			return
+		}
+	}
+
+	h.logger.Infof("Get params date staff %s", c.Param("ID"))
+	c.JSON(http.StatusOK, income)
 }

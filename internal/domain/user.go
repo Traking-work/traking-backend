@@ -30,3 +30,8 @@ type UserDataAccount struct {
 	CountEmployee int                `json:"count_employee"`
 	Director      string             `json:"director"`
 }
+
+type DataForParams struct {
+	Position string `json:"position" binding:"required"`
+	Date     string `json:"date"`
+}

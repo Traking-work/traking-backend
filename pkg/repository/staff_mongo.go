@@ -69,6 +69,21 @@ func (r *StaffRepo) GetAccounts(ctx context.Context, userID primitive.ObjectID, 
 	return accountsDate, nil
 }
 
+func (r *StaffRepo) GetAllAccounts(ctx context.Context, userID primitive.ObjectID) ([]domain.AccountData, error) {
+	var accounts []domain.AccountData
+
+	cur, err := r.db.Find(ctx, bson.M{"user_id": userID})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := cur.All(ctx, &accounts); err != nil {
+		return nil, err
+	}
+
+	return accounts, nil
+}
+
 func (r *StaffRepo) AddAccount(ctx context.Context, account domain.AccountData) error {
 	_, err := r.db.InsertOne(ctx, account)
 	return err
@@ -76,8 +91,14 @@ func (r *StaffRepo) AddAccount(ctx context.Context, account domain.AccountData) 
 
 func (r *StaffRepo) GetPacksAccount(ctx context.Context, accountID primitive.ObjectID, date string) ([]domain.AccountPack, error) {
 	var packsAccount []domain.AccountPack
+	var cur *mongo.Cursor
+	var err error
 
-	cur, err := r.db.Database().Collection(packAccountsCollection).Find(ctx, bson.M{"account_id": accountID, "date": date})
+	if date != "" {
+		cur, err = r.db.Database().Collection(packAccountsCollection).Find(ctx, bson.M{"account_id": accountID, "date": date})
+	} else {
+		cur, err = r.db.Database().Collection(packAccountsCollection).Find(ctx, bson.M{"account_id": accountID})
+	}
 	if err != nil {
 		return nil, err
 	}
@@ -122,4 +143,34 @@ func (r *StaffRepo) DeleteAccount(ctx context.Context, accountID primitive.Objec
 
 	_, err := r.db.UpdateOne(ctx, bson.M{"_id": accountID}, bson.M{"$set": bson.M{"status_delete": true, "delete_date": time.Now()}})
 	return err
+}
+
+func (r *StaffRepo) GetStaff(ctx context.Context, userID primitive.ObjectID) ([]domain.UserDataAccount, error) {
+	var staff []domain.UserDataAccount
+
+	cur, err := r.db.Database().Collection(usersCollection).Find(ctx, bson.M{"position": "staff", "teamlead": userID})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := cur.All(ctx, &staff); err != nil {
+		return nil, err
+	}
+
+	return staff, nil
+}
+
+func (r *StaffRepo) GetTeamLeads(ctx context.Context) ([]domain.UserDataAccount, error) {
+	var teamleads []domain.UserDataAccount
+
+	cur, err := r.db.Database().Collection(usersCollection).Find(ctx, bson.M{"position": "teamlead"})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := cur.All(ctx, &teamleads); err != nil {
+		return nil, err
+	}
+
+	return teamleads, nil
 }

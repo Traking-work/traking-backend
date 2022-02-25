@@ -45,6 +45,12 @@ type Staff interface {
 	UpgradePack(ctx context.Context, packID primitive.ObjectID, pack domain.AccountPack) error
 	ApprovePack(ctx context.Context, packID primitive.ObjectID) error
 	DeleteAccount(ctx context.Context, accountID primitive.ObjectID) error
+	GetParamsMainStaff(ctx context.Context, userID primitive.ObjectID) (float64, error)
+	GetParamsDateStaff(ctx context.Context, userID primitive.ObjectID, date string) (float64, error)
+	GetParamsMainTeamlead(ctx context.Context, userID primitive.ObjectID) (float64, error)
+	GetParamsDateTeamlead(ctx context.Context, userID primitive.ObjectID, date string) (float64, error)
+	GetParamsMainAdmin(ctx context.Context) (float64, error)
+	GetParamsDateAdmin(ctx context.Context, date string) (float64, error)
 }
 
 type Service struct {
