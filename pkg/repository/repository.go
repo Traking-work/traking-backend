@@ -40,6 +40,7 @@ type Staff interface {
 	AddPack(ctx context.Context, accountID primitive.ObjectID, pack domain.AccountPack) error
 	UpgradePack(ctx context.Context, packID primitive.ObjectID, pack domain.AccountPack) error
 	ApprovePack(ctx context.Context, packID primitive.ObjectID) error
+	DeletePack(ctx context.Context, packID primitive.ObjectID) error
 	DeleteAccount(ctx context.Context, accountID primitive.ObjectID) error
 	GetStaff(ctx context.Context, userID primitive.ObjectID) ([]domain.UserDataAccount, error)
 	GetTeamLeads(ctx context.Context) ([]domain.UserDataAccount, error)

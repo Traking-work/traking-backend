@@ -64,6 +64,11 @@ func (s *StaffService) ApprovePack(ctx context.Context, packID primitive.ObjectI
 	return err
 }
 
+func (s *StaffService) DeletePack(ctx context.Context, packID primitive.ObjectID) error {
+	err := s.repo.DeletePack(ctx, packID)
+	return err
+}
+
 func (s *StaffService) DeleteAccount(ctx context.Context, accountID primitive.ObjectID) error {
 	err := s.repo.DeleteAccount(ctx, accountID)
 	return err
@@ -149,7 +154,7 @@ func (s *StaffService) GetParamsDateTeamlead(ctx context.Context, userID primiti
 	return income, nil
 }
 
-func (s *StaffService) GetParamsMainAdmin(ctx context.Context) (float64, error) {
+func (s *StaffService) GetParamsMainAdmin(ctx context.Context, userID primitive.ObjectID) (float64, error) {
 	income := 0.0
 
 	teamleads, err := s.repo.GetTeamLeads(ctx)
@@ -165,10 +170,23 @@ func (s *StaffService) GetParamsMainAdmin(ctx context.Context) (float64, error) 
 		income += income_st
 	}
 
+	staff, err := s.repo.GetStaff(ctx, userID)
+	if err != nil {
+		return 0, err
+	}
+
+	for _, st := range staff {
+		income_st, err := s.GetParamsMainStaff(ctx, st.ID)
+		if err != nil {
+			return 0, err
+		}
+		income += income_st
+	}
+
 	return income, nil
 }
 
-func (s *StaffService) GetParamsDateAdmin(ctx context.Context, date string) (float64, error) {
+func (s *StaffService) GetParamsDateAdmin(ctx context.Context, userID primitive.ObjectID, date string) (float64, error) {
 	income := 0.0
 
 	teamleads, err := s.repo.GetTeamLeads(ctx)
@@ -178,6 +196,19 @@ func (s *StaffService) GetParamsDateAdmin(ctx context.Context, date string) (flo
 
 	for _, teamlead := range teamleads {
 		income_st, err := s.GetParamsDateTeamlead(ctx, teamlead.ID, date)
+		if err != nil {
+			return 0, err
+		}
+		income += income_st
+	}
+
+	staff, err := s.repo.GetStaff(ctx, userID)
+	if err != nil {
+		return 0, err
+	}
+
+	for _, st := range staff {
+		income_st, err := s.GetParamsDateStaff(ctx, st.ID, date)
 		if err != nil {
 			return 0, err
 		}

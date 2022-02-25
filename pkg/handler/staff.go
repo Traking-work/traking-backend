@@ -171,6 +171,21 @@ func (h *Handler) ApprovePack(c *gin.Context) {
 	h.logger.Infof("Approve pack %s", c.Param("ID"))
 }
 
+func (h *Handler) DeletePack(c *gin.Context) {
+	packID, err := primitive.ObjectIDFromHex(c.Param("ID"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	if err := h.services.Staff.DeletePack(c, packID); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	h.logger.Infof("Delete pack %s", c.Param("ID"))
+}
+
 func (h *Handler) DeleteAccount(c *gin.Context) {
 	accountID, err := primitive.ObjectIDFromHex(c.Param("ID"))
 	if err != nil {
@@ -214,7 +229,7 @@ func (h *Handler) GetParamsMain(c *gin.Context) {
 			return
 		}
 	} else {
-		income, err = h.services.Staff.GetParamsMainAdmin(c)
+		income, err = h.services.Staff.GetParamsMainAdmin(c, userID)
 		if err != nil {
 			newErrorResponse(c, http.StatusBadRequest, err.Error())
 			return
@@ -253,7 +268,7 @@ func (h *Handler) GetParamsDate(c *gin.Context) {
 			return
 		}
 	} else {
-		income, err = h.services.Staff.GetParamsDateAdmin(c, inp.Date)
+		income, err = h.services.Staff.GetParamsDateAdmin(c, userID, inp.Date)
 		if err != nil {
 			newErrorResponse(c, http.StatusBadRequest, err.Error())
 			return

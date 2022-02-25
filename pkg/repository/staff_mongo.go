@@ -132,6 +132,11 @@ func (r *StaffRepo) ApprovePack(ctx context.Context, packID primitive.ObjectID) 
 	return err
 }
 
+func (r *StaffRepo) DeletePack(ctx context.Context, packID primitive.ObjectID) error {
+	_, err := r.db.Database().Collection(packAccountsCollection).DeleteOne(ctx, bson.M{"_id": packID})
+	return err
+}
+
 func (r *StaffRepo) DeleteAccount(ctx context.Context, accountID primitive.ObjectID) error {
 	//_, err := r.db.DeleteOne(ctx, bson.M{"_id": accountID})
 	//if err != nil {
