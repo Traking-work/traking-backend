@@ -23,7 +23,6 @@ func (h *Handler) GetDataUser(c *gin.Context) {
 	}
 
 	h.logger.Infof("Get data user %s", c.Param("ID"))
-
 	c.JSON(http.StatusOK, dataUser)
 }
 

@@ -24,11 +24,13 @@ type UserSelect struct {
 }
 
 type UserDataAccount struct {
-	ID            primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	Name          string             `json:"name" binding:"required"`
-	Username      string             `json:"username" binding:"required"`
-	CountEmployee int                `json:"count_employee"`
-	Director      string             `json:"director"`
+	ID               primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	Name             string             `json:"name" binding:"required"`
+	Username         string             `json:"username" binding:"required"`
+	CountEmployee    int                `json:"count_employee"`
+	Director         string             `json:"director"`
+	DirectorID       primitive.ObjectID `json:"director_id"`
+	DirectorPosition string             `json:"director_position"`
 }
 
 type DataForParams struct {

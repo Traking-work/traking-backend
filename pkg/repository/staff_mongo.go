@@ -29,6 +29,7 @@ func (r *StaffRepo) GetDataUser(ctx context.Context, userID primitive.ObjectID) 
 	dataUserAcc.ID = dataUser.ID
 	dataUserAcc.Name = dataUser.Name
 	dataUserAcc.Username = dataUser.Username
+	dataUserAcc.DirectorID = dataUser.TeamLead
 
 	if dataUser.Position == "staff" {
 		err = r.db.Database().Collection(usersCollection).FindOne(ctx, bson.M{"_id": dataUser.TeamLead}).Decode(&dataUser)
@@ -36,6 +37,7 @@ func (r *StaffRepo) GetDataUser(ctx context.Context, userID primitive.ObjectID) 
 			return domain.UserDataAccount{}, err
 		}
 		dataUserAcc.Director = dataUser.Name
+		dataUserAcc.DirectorPosition = dataUser.Position
 	}
 
 	return dataUserAcc, nil
