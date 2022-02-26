@@ -6,10 +6,10 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/joho/godotenv"
-	"github.com/Traking-work/traking-backend.git/pkg/repository"
 	"github.com/Traking-work/traking-backend.git/internal/domain"
 	"github.com/Traking-work/traking-backend.git/pkg/logging"
+	"github.com/Traking-work/traking-backend.git/pkg/repository"
+	"github.com/joho/godotenv"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -65,7 +65,7 @@ func generateHash(password string) string {
 	return fmt.Sprintf("%x", hash.Sum([]byte(os.Getenv("SALT"))))
 }
 
-func (s *AdminService) DeleteUser(ctx context.Context, userID primitive.ObjectID) error {
-	err := s.repo.DeleteUser(ctx, userID)
+func (s *AdminService) DeleteUser(ctx context.Context, userID primitive.ObjectID, position string) error {
+	err := s.repo.DeleteUser(ctx, userID, position)
 	return err
 }

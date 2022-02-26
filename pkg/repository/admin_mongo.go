@@ -5,9 +5,9 @@ import (
 	"errors"
 
 	"github.com/Traking-work/traking-backend.git/internal/domain"
-	"go.mongodb.org/mongo-driver/mongo"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
+	"go.mongodb.org/mongo-driver/mongo"
 )
 
 type AdminRepo struct {
@@ -132,7 +132,7 @@ func (r *AdminRepo) CheckUsername(ctx context.Context, username string) (bool, e
 		}
 		return false, err
 	}
-	
+
 	return false, nil
 }
 
@@ -156,19 +156,39 @@ func (r *AdminRepo) AddUser(ctx context.Context, inp domain.UserData) error {
 	}
 }
 
-func (r *AdminRepo) DeleteUser(ctx context.Context, userID primitive.ObjectID) error {
+func (r *AdminRepo) DeleteUser(ctx context.Context, userID primitive.ObjectID, position string) error {
+	if position == "staff" {
+		if err := r.DeleteAccountsAndPacks(ctx, userID); err != nil {
+			return err
+		}
+	} else if position == "teamlead" {
+		workersTeamlead, err := r.GetWorkers(ctx, userID)
+		if err != nil {
+			return err
+		}
+
+		for _, worker := range workersTeamlead {
+			if err := r.DeleteAccountsAndPacks(ctx, worker.ID); err != nil {
+				return err
+			}
+
+			_, err = r.db.DeleteOne(ctx, bson.M{"_id": worker.ID})
+			if err != nil {
+				return err
+			}
+		}
+	}
+
 	_, err := r.db.DeleteOne(ctx, bson.M{"_id": userID})
 	if err != nil {
 		return err
 	}
 
-	_, err = r.db.DeleteOne(ctx, bson.M{"teamlead": userID})
-	if err != nil {
-		return err
-	}
+	return nil
+}
 
+func (r *AdminRepo) DeleteAccountsAndPacks(ctx context.Context, userID primitive.ObjectID) error {
 	var accountsDel []domain.AccountData
-
 	cur, err := r.db.Database().Collection(accountsCollection).Find(ctx, bson.M{"user_id": userID})
 	if err != nil {
 		return err
@@ -178,13 +198,13 @@ func (r *AdminRepo) DeleteUser(ctx context.Context, userID primitive.ObjectID) e
 		return err
 	}
 
-	for _, i := range accountsDel {
-		_, err = r.db.Database().Collection(packAccountsCollection).DeleteOne(ctx, bson.M{"account_id": i.ID})
+	for _, account := range accountsDel {
+		_, err = r.db.Database().Collection(packAccountsCollection).DeleteMany(ctx, bson.M{"account_id": account.ID})
 		if err != nil {
 			return err
 		}
 
-		_, err = r.db.Database().Collection(accountsCollection).DeleteOne(ctx, bson.M{"_id": i.ID})
+		_, err = r.db.Database().Collection(accountsCollection).DeleteOne(ctx, bson.M{"_id": account.ID})
 		if err != nil {
 			return err
 		}

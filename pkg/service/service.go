@@ -28,7 +28,7 @@ type Admin interface {
 	GetCountWorkers(ctx context.Context, userID primitive.ObjectID) (int, error)
 	GetWorkers(ctx context.Context, userID primitive.ObjectID) ([]domain.UserDataAccount, error)
 	AddUser(ctx context.Context, inp domain.UserData) error
-	DeleteUser(ctx context.Context, userID primitive.ObjectID) error
+	DeleteUser(ctx context.Context, userID primitive.ObjectID, position string) error
 }
 
 type Teamlead interface {

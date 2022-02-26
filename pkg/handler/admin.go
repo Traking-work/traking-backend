@@ -1,11 +1,11 @@
 package handler
 
 import (
-	"net/http"
 	"errors"
+	"net/http"
 
-	"github.com/gin-gonic/gin"
 	"github.com/Traking-work/traking-backend.git/internal/domain"
+	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
 
@@ -19,7 +19,7 @@ func (h *Handler) GetTeamLeads(c *gin.Context) {
 	h.logger.Info("Get teamleads")
 
 	c.JSON(http.StatusOK, map[string]interface{}{
-		"teamleads": teamleads,
+		"teamleads":      teamleads,
 		"teamleadCreate": teamleadCreate,
 	})
 }
@@ -87,7 +87,13 @@ func (h *Handler) DeleteUser(c *gin.Context) {
 		return
 	}
 
-	if err = h.services.Admin.DeleteUser(c, userID); err != nil {
+	var inp domain.DataForParams
+	if err := c.BindJSON(&inp); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
+		return
+	}
+
+	if err = h.services.Admin.DeleteUser(c, userID, inp.Position); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
