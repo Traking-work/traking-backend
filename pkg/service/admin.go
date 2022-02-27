@@ -69,3 +69,8 @@ func (s *AdminService) DeleteUser(ctx context.Context, userID primitive.ObjectID
 	err := s.repo.DeleteUser(ctx, userID, position)
 	return err
 }
+
+func (s *AdminService) SavePercent(ctx context.Context, accountID primitive.ObjectID, percent float32) error {
+	err := s.repo.SavePercent(ctx, accountID, percent)
+	return err
+}

@@ -74,146 +74,162 @@ func (s *StaffService) DeleteAccount(ctx context.Context, accountID primitive.Ob
 	return err
 }
 
-func (s *StaffService) GetParamsMainStaff(ctx context.Context, userID primitive.ObjectID) (float64, error) {
-	income := 0.0
+func (s *StaffService) GetParamsMainStaff(ctx context.Context, userID primitive.ObjectID) (float32, float32, error) {
+	incomeAll := float32(0)
+	incomeAdmin := float32(0)
+
 	accounts, err := s.repo.GetAllAccounts(ctx, userID)
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 
 	for _, account := range accounts {
 		packsAccount, err := s.repo.GetPacksAccount(ctx, account.ID, "")
 		if err != nil {
-			return 0, err
+			return 0, 0, err
 		}
 
 		for _, pack := range packsAccount {
-			income += float64(pack.CountTask) * float64(pack.Payment)
+			incomeAll += float32(pack.CountTask) * float32(pack.Payment)
 		}
+		incomeAdmin = incomeAll * float32(account.Percent)
 	}
 
-	return income, nil
+	return incomeAll, incomeAdmin, nil
 }
 
-func (s *StaffService) GetParamsDateStaff(ctx context.Context, userID primitive.ObjectID, date string) (float64, error) {
-	income := 0.0
+func (s *StaffService) GetParamsDateStaff(ctx context.Context, userID primitive.ObjectID, date string) (float32, float32, error) {
+	incomeAll := float32(0)
+	incomeAdmin := float32(0)
+
 	accounts, err := s.repo.GetAllAccounts(ctx, userID)
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 
 	for _, account := range accounts {
 		packsAccount, err := s.repo.GetPacksAccount(ctx, account.ID, date)
 		if err != nil {
-			return 0, err
+			return 0, 0, err
 		}
 
 		for _, pack := range packsAccount {
-			income += float64(pack.CountTask) * float64(pack.Payment)
+			incomeAll += float32(pack.CountTask) * float32(pack.Payment)
 		}
+		incomeAdmin = incomeAll * float32(account.Percent)
 	}
 
-	return income, nil
+	return incomeAll, incomeAdmin, nil
 }
 
-func (s *StaffService) GetParamsMainTeamlead(ctx context.Context, userID primitive.ObjectID) (float64, error) {
-	income := 0.0
+func (s *StaffService) GetParamsMainTeamlead(ctx context.Context, userID primitive.ObjectID) (float32, float32, error) {
+	incomeAll := float32(0)
+	incomeAdmin := float32(0)
 
 	staff, err := s.repo.GetStaff(ctx, userID)
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 
 	for _, st := range staff {
-		income_st, err := s.GetParamsMainStaff(ctx, st.ID)
+		income_st_all, income_st_admin, err := s.GetParamsMainStaff(ctx, st.ID)
 		if err != nil {
-			return 0, err
+			return 0, 0, err
 		}
-		income += income_st
+		incomeAll += income_st_all
+		incomeAdmin += income_st_admin
 	}
 
-	return income, nil
+	return incomeAll, incomeAdmin, nil
 }
 
-func (s *StaffService) GetParamsDateTeamlead(ctx context.Context, userID primitive.ObjectID, date string) (float64, error) {
-	income := 0.0
+func (s *StaffService) GetParamsDateTeamlead(ctx context.Context, userID primitive.ObjectID, date string) (float32, float32, error) {
+	incomeAll := float32(0)
+	incomeAdmin := float32(0)
 
 	staff, err := s.repo.GetStaff(ctx, userID)
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 
 	for _, st := range staff {
-		income_st, err := s.GetParamsDateStaff(ctx, st.ID, date)
+		income_st_all, income_st_admin, err := s.GetParamsDateStaff(ctx, st.ID, date)
 		if err != nil {
-			return 0, err
+			return 0, 0, err
 		}
-		income += income_st
+		incomeAll += income_st_all
+		incomeAdmin += income_st_admin
 	}
 
-	return income, nil
+	return incomeAll, incomeAdmin, nil
 }
 
-func (s *StaffService) GetParamsMainAdmin(ctx context.Context, userID primitive.ObjectID) (float64, error) {
-	income := 0.0
+func (s *StaffService) GetParamsMainAdmin(ctx context.Context, userID primitive.ObjectID) (float32, float32, error) {
+	incomeAll := float32(0)
+	incomeAdmin := float32(0)
 
 	teamleads, err := s.repo.GetTeamLeads(ctx)
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 
 	for _, teamlead := range teamleads {
-		income_st, err := s.GetParamsMainTeamlead(ctx, teamlead.ID)
+		income_st_all, income_st_admin, err := s.GetParamsMainTeamlead(ctx, teamlead.ID)
 		if err != nil {
-			return 0, err
+			return 0, 0, err
 		}
-		income += income_st
+		incomeAll += income_st_all
+		incomeAdmin += income_st_admin
 	}
 
 	staff, err := s.repo.GetStaff(ctx, userID)
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 
 	for _, st := range staff {
-		income_st, err := s.GetParamsMainStaff(ctx, st.ID)
+		income_st_all, income_st_admin, err := s.GetParamsMainStaff(ctx, st.ID)
 		if err != nil {
-			return 0, err
+			return 0, 0, err
 		}
-		income += income_st
+		incomeAll += income_st_all
+		incomeAdmin += income_st_admin
 	}
 
-	return income, nil
+	return incomeAll, incomeAdmin, nil
 }
 
-func (s *StaffService) GetParamsDateAdmin(ctx context.Context, userID primitive.ObjectID, date string) (float64, error) {
-	income := 0.0
+func (s *StaffService) GetParamsDateAdmin(ctx context.Context, userID primitive.ObjectID, date string) (float32, float32, error) {
+	incomeAll := float32(0)
+	incomeAdmin := float32(0)
 
 	teamleads, err := s.repo.GetTeamLeads(ctx)
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 
 	for _, teamlead := range teamleads {
-		income_st, err := s.GetParamsDateTeamlead(ctx, teamlead.ID, date)
+		income_st_all, income_st_admin, err := s.GetParamsDateTeamlead(ctx, teamlead.ID, date)
 		if err != nil {
-			return 0, err
+			return 0, 0, err
 		}
-		income += income_st
+		incomeAll += income_st_all
+		incomeAdmin += income_st_admin
 	}
 
 	staff, err := s.repo.GetStaff(ctx, userID)
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 
 	for _, st := range staff {
-		income_st, err := s.GetParamsDateStaff(ctx, st.ID, date)
+		income_st_all, income_st_admin, err := s.GetParamsDateStaff(ctx, st.ID, date)
 		if err != nil {
-			return 0, err
+			return 0, 0, err
 		}
-		income += income_st
+		incomeAll += income_st_all
+		incomeAdmin += income_st_admin
 	}
 
-	return income, nil
+	return incomeAll, incomeAdmin, nil
 }

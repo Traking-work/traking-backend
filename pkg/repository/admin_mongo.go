@@ -212,3 +212,8 @@ func (r *AdminRepo) DeleteAccountsAndPacks(ctx context.Context, userID primitive
 
 	return nil
 }
+
+func (r *AdminRepo) SavePercent(ctx context.Context, accountID primitive.ObjectID, percent float32) error {
+	_, err := r.db.Database().Collection(accountsCollection).UpdateOne(ctx, bson.M{"_id": accountID}, bson.M{"$set": bson.M{"percent": percent}})
+	return err
+}

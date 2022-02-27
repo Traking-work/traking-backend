@@ -25,7 +25,7 @@ func (h *Handler) GetTeamLeads(c *gin.Context) {
 }
 
 func (h *Handler) GetCountWorkers(c *gin.Context) {
-	userID, err := primitive.ObjectIDFromHex(c.Param("userID"))
+	userID, err := primitive.ObjectIDFromHex(c.Param("ID"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -37,13 +37,13 @@ func (h *Handler) GetCountWorkers(c *gin.Context) {
 		return
 	}
 
-	h.logger.Infof("Get count workers %s", c.Param("userID"))
+	h.logger.Infof("Get count workers %s", c.Param("ID"))
 
 	c.JSON(http.StatusOK, countWorkers)
 }
 
 func (h *Handler) GetWorkers(c *gin.Context) {
-	userID, err := primitive.ObjectIDFromHex(c.Param("userID"))
+	userID, err := primitive.ObjectIDFromHex(c.Param("ID"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -55,7 +55,7 @@ func (h *Handler) GetWorkers(c *gin.Context) {
 		return
 	}
 
-	h.logger.Infof("Get workers %s", c.Param("userID"))
+	h.logger.Infof("Get workers %s", c.Param("ID"))
 
 	c.JSON(http.StatusOK, workers)
 }
@@ -81,7 +81,7 @@ func (h *Handler) AddUser(c *gin.Context) {
 }
 
 func (h *Handler) DeleteUser(c *gin.Context) {
-	userID, err := primitive.ObjectIDFromHex(c.Param("userID"))
+	userID, err := primitive.ObjectIDFromHex(c.Param("ID"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
@@ -98,5 +98,26 @@ func (h *Handler) DeleteUser(c *gin.Context) {
 		return
 	}
 
-	h.logger.Infof("Delete user %s", c.Param("userID"))
+	h.logger.Infof("Delete user %s", c.Param("ID"))
+}
+
+func (h *Handler) SavePercent(c *gin.Context) {
+	accountID, err := primitive.ObjectIDFromHex(c.Param("ID"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	var inp domain.AccountPercent
+	if err := c.BindJSON(&inp); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
+		return
+	}
+
+	if err = h.services.Admin.SavePercent(c, accountID, inp.Percent); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	h.logger.Infof("Sae percent %s", c.Param("ID"))
 }

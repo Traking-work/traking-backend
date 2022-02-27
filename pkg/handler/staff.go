@@ -63,6 +63,7 @@ func (h *Handler) AddAccount(c *gin.Context) {
 		return
 	}
 	inp.UserID = userID
+	inp.Percent = 0.25
 	inp.CreateDate = time.Now()
 	inp.StatusDelete = false
 
@@ -99,9 +100,9 @@ func (h *Handler) GetDataAccount(c *gin.Context) {
 		return
 	}
 
-	income := 0.0
+	income := float32(0)
 	for _, pack := range packsAccount {
-		income += float64(pack.CountTask) * float64(pack.Payment)
+		income += float32(pack.CountTask) * float32(pack.Payment)
 	}
 	dataAccount.Income = income
 
@@ -213,22 +214,23 @@ func (h *Handler) GetParamsMain(c *gin.Context) {
 		return
 	}
 
-	var income float64
+	var incomeAll float32
+	var incomeAdmin float32
 
 	if inp.Position == "staff" {
-		income, err = h.services.Staff.GetParamsMainStaff(c, userID)
+		incomeAll, incomeAdmin, err = h.services.Staff.GetParamsMainStaff(c, userID)
 		if err != nil {
 			newErrorResponse(c, http.StatusBadRequest, err.Error())
 			return
 		}
 	} else if inp.Position == "teamlead" {
-		income, err = h.services.Staff.GetParamsMainTeamlead(c, userID)
+		incomeAll, incomeAdmin, err = h.services.Staff.GetParamsMainTeamlead(c, userID)
 		if err != nil {
 			newErrorResponse(c, http.StatusBadRequest, err.Error())
 			return
 		}
 	} else {
-		income, err = h.services.Staff.GetParamsMainAdmin(c, userID)
+		incomeAll, incomeAdmin, err = h.services.Staff.GetParamsMainAdmin(c, userID)
 		if err != nil {
 			newErrorResponse(c, http.StatusBadRequest, err.Error())
 			return
@@ -236,7 +238,10 @@ func (h *Handler) GetParamsMain(c *gin.Context) {
 	}
 
 	h.logger.Infof("Get params main staff %s", c.Param("ID"))
-	c.JSON(http.StatusOK, income)
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"incomeAll":   incomeAll,
+		"incomeAdmin": incomeAdmin,
+	})
 }
 
 func (h *Handler) GetParamsDate(c *gin.Context) {
@@ -252,22 +257,23 @@ func (h *Handler) GetParamsDate(c *gin.Context) {
 		return
 	}
 
-	var income float64
+	var incomeAll float32
+	var incomeAdmin float32
 
 	if inp.Position == "staff" {
-		income, err = h.services.Staff.GetParamsDateStaff(c, userID, inp.Date)
+		incomeAll, incomeAdmin, err = h.services.Staff.GetParamsDateStaff(c, userID, inp.Date)
 		if err != nil {
 			newErrorResponse(c, http.StatusBadRequest, err.Error())
 			return
 		}
 	} else if inp.Position == "teamlead" {
-		income, err = h.services.Staff.GetParamsDateTeamlead(c, userID, inp.Date)
+		incomeAll, incomeAdmin, err = h.services.Staff.GetParamsDateTeamlead(c, userID, inp.Date)
 		if err != nil {
 			newErrorResponse(c, http.StatusBadRequest, err.Error())
 			return
 		}
 	} else {
-		income, err = h.services.Staff.GetParamsDateAdmin(c, userID, inp.Date)
+		incomeAll, incomeAdmin, err = h.services.Staff.GetParamsDateAdmin(c, userID, inp.Date)
 		if err != nil {
 			newErrorResponse(c, http.StatusBadRequest, err.Error())
 			return
@@ -275,5 +281,8 @@ func (h *Handler) GetParamsDate(c *gin.Context) {
 	}
 
 	h.logger.Infof("Get params date staff %s", c.Param("ID"))
-	c.JSON(http.StatusOK, income)
+	c.JSON(http.StatusOK, map[string]interface{}{
+		"incomeAll":   incomeAll,
+		"incomeAdmin": incomeAdmin,
+	})
 }
