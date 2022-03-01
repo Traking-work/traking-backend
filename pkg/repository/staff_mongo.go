@@ -57,9 +57,27 @@ func (r *StaffRepo) GetAccounts(ctx context.Context, userID primitive.ObjectID, 
 	}
 
 	for _, account := range accounts {
-		if account.CreateDate.Day() <= date.Day() {
+		if account.CreateDate.Month() == date.Month() {
+			if account.CreateDate.Day() <= date.Day() {
+				if account.StatusDelete {
+					if account.DeleteDate.Month() == date.Month() {
+						if account.DeleteDate.Day() > date.Day() {
+							accountsDate = append(accountsDate, account)
+						}
+					} else if account.DeleteDate.Month() > date.Month() {
+						accountsDate = append(accountsDate, account)
+					}
+				} else {
+					accountsDate = append(accountsDate, account)
+				}
+			}
+		} else if account.CreateDate.Month() < date.Month() {
 			if account.StatusDelete {
-				if account.DeleteDate.Day() > date.Day() {
+				if account.DeleteDate.Month() == date.Month() {
+					if account.DeleteDate.Day() > date.Day() {
+						accountsDate = append(accountsDate, account)
+					}
+				} else if account.DeleteDate.Month() > date.Month() {
 					accountsDate = append(accountsDate, account)
 				}
 			} else {
