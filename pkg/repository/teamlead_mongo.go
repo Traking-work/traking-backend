@@ -3,6 +3,7 @@ package repository
 import (
 	"context"
 	"errors"
+	"time"
 
 	"github.com/Traking-work/traking-backend.git/internal/domain"
 	"go.mongodb.org/mongo-driver/bson"
@@ -31,24 +32,53 @@ func (r *TeamleadRepo) GetData(ctx context.Context, userID primitive.ObjectID) (
 	return teamlead, nil
 }
 
-func (r *TeamleadRepo) GetCountAccounts(ctx context.Context, userID primitive.ObjectID) (int, error) {
-	var accounts []domain.UserDataAccount
+func (r *TeamleadRepo) GetCountAccounts(ctx context.Context, userID primitive.ObjectID) (int, int, error) {
+	var accounts []domain.AccountData
 	countAccounts := 0
+	countAccountsActive := 0
 
 	cur, err := r.db.Database().Collection(accountsCollection).Find(ctx, bson.M{"user_id": userID})
 	if err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 
 	if err := cur.All(ctx, &accounts); err != nil {
-		return 0, err
+		return 0, 0, err
 	}
 
-	for _ = range accounts {
+	for _, account := range accounts {
 		countAccounts++
+
+		if account.CreateDate.Month() == time.Now().Month() {
+			if account.CreateDate.Day() <= time.Now().Day() {
+				if account.StatusDelete {
+					if account.DeleteDate.Month() == time.Now().Month() {
+						if account.DeleteDate.Day() > time.Now().Day() {
+							countAccountsActive++
+						}
+					} else if account.DeleteDate.Month() > time.Now().Month() {
+						countAccountsActive++
+					}
+				} else {
+					countAccountsActive++
+				}
+			}
+		} else if account.CreateDate.Month() < time.Now().Month() {
+			if account.StatusDelete {
+				if account.DeleteDate.Month() == time.Now().Month() {
+					if account.DeleteDate.Day() > time.Now().Day() {
+						countAccountsActive++
+					}
+				} else if account.DeleteDate.Month() > time.Now().Month() {
+					countAccountsActive++
+				}
+			} else {
+				countAccountsActive++
+			}
+		}
 	}
 
-	return countAccounts, nil
+	return countAccounts, countAccountsActive, nil
 }
 
 func (r *TeamleadRepo) GetStaff(ctx context.Context, userID primitive.ObjectID) ([]domain.UserDataAccount, error) {
@@ -64,9 +94,10 @@ func (r *TeamleadRepo) GetStaff(ctx context.Context, userID primitive.ObjectID) 
 	}
 
 	for index, i := range staff {
-		countAccounts, err := r.GetCountAccounts(ctx, i.ID)
+		countAccounts, countAccountsActive, err := r.GetCountAccounts(ctx, i.ID)
 		if err == nil {
 			staff[index].CountEmployee = countAccounts
+			staff[index].CountEmployeeActive = countAccountsActive
 		}
 	}
 
