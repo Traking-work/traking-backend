@@ -38,3 +38,7 @@ type DataForParams struct {
 	Position string `json:"position" binding:"required"`
 	Date     string `json:"date"`
 }
+
+type UserTeamlead struct {
+	TeamLead primitive.ObjectID `json:"teamlead"`
+}

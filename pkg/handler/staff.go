@@ -286,3 +286,24 @@ func (h *Handler) GetParamsDate(c *gin.Context) {
 		"incomeAdmin": incomeAdmin,
 	})
 }
+
+func (h *Handler) ChangeTeamlead(c *gin.Context) {
+	userID, err := primitive.ObjectIDFromHex(c.Param("ID"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	var inp domain.UserTeamlead
+	if err := c.BindJSON(&inp); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
+		return
+	}
+
+	if err := h.services.Staff.ChangeTeamlead(c, userID, inp.TeamLead); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	h.logger.Infof("Change teamlead from %s to %s", c.Param("ID"), inp.TeamLead)
+}

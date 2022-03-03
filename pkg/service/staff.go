@@ -233,3 +233,8 @@ func (s *StaffService) GetParamsDateAdmin(ctx context.Context, userID primitive.
 
 	return incomeAll, incomeAdmin, nil
 }
+
+func (s *StaffService) ChangeTeamlead(ctx context.Context, userID primitive.ObjectID, teamleadID primitive.ObjectID) error {
+	err := s.repo.ChangeTeamlead(ctx, userID, teamleadID)
+	return err
+}

@@ -53,6 +53,7 @@ type Staff interface {
 	GetParamsDateTeamlead(ctx context.Context, userID primitive.ObjectID, date string) (float32, float32, error)
 	GetParamsMainAdmin(ctx context.Context, userID primitive.ObjectID) (float32, float32, error)
 	GetParamsDateAdmin(ctx context.Context, userID primitive.ObjectID, date string) (float32, float32, error)
+	ChangeTeamlead(ctx context.Context, userID primitive.ObjectID, teamleadID primitive.ObjectID) error
 }
 
 type Service struct {

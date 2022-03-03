@@ -199,3 +199,8 @@ func (r *StaffRepo) GetTeamLeads(ctx context.Context) ([]domain.UserDataAccount,
 
 	return teamleads, nil
 }
+
+func (r *StaffRepo) ChangeTeamlead(ctx context.Context, userID primitive.ObjectID, teamleadID primitive.ObjectID) error {
+	_, err := r.db.Database().Collection(usersCollection).UpdateOne(ctx, bson.M{"_id": userID}, bson.M{"$set": bson.M{"teamlead": teamleadID}})
+	return err
+}

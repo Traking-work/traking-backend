@@ -45,6 +45,7 @@ type Staff interface {
 	DeleteAccount(ctx context.Context, accountID primitive.ObjectID) error
 	GetStaff(ctx context.Context, userID primitive.ObjectID) ([]domain.UserDataAccount, error)
 	GetTeamLeads(ctx context.Context) ([]domain.UserDataAccount, error)
+	ChangeTeamlead(ctx context.Context, userID primitive.ObjectID, teamleadID primitive.ObjectID) error
 }
 
 type Repository struct {

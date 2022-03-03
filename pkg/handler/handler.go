@@ -72,6 +72,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			staff.GET("/:ID/delete-account", h.DeleteAccount)
 			staff.POST("/:ID/get-params-main", h.GetParamsMain)
 			staff.POST("/:ID/get-params-date", h.GetParamsDate)
+			staff.POST("/:ID/change-teamlead", h.ChangeTeamlead)
 		}
 	}
 
