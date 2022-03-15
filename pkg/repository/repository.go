@@ -36,7 +36,7 @@ type Staff interface {
 	GetAccounts(ctx context.Context, userID primitive.ObjectID, date time.Time) ([]domain.AccountData, error)
 	GetAllAccounts(ctx context.Context, userID primitive.ObjectID) ([]domain.AccountData, error)
 	AddAccount(ctx context.Context, account domain.AccountData) error
-	GetPacksAccount(ctx context.Context, accountID primitive.ObjectID, date string) ([]domain.AccountPack, error)
+	GetPacksAccount(ctx context.Context, accountID primitive.ObjectID, fromDate string, toDate string) ([]domain.AccountPack, error)
 	GetDataAccount(ctx context.Context, accountID primitive.ObjectID) (domain.AccountData, error)
 	AddPack(ctx context.Context, accountID primitive.ObjectID, pack domain.AccountPack) error
 	UpgradePack(ctx context.Context, packID primitive.ObjectID, pack domain.AccountPack) error

@@ -4,8 +4,8 @@ Description=Traking work backend
 [Service]
 User=q
 Type=simple
-WorkingDirectory=/home/q/traking-work/traking-backend
-ExecStart=/home/q/traking-work/traking-backend/traking-backend
+WorkingDirectory=/home/q/traking-work/backend
+ExecStart=/home/q/traking-work/backend/main
 Restart=always
 
 [Install]

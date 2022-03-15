@@ -261,19 +261,19 @@ func (h *Handler) GetParamsDate(c *gin.Context) {
 	var incomeAdmin float32
 
 	if inp.Position == "staff" {
-		incomeAll, incomeAdmin, err = h.services.Staff.GetParamsDateStaff(c, userID, inp.Date)
+		incomeAll, incomeAdmin, err = h.services.Staff.GetParamsDateStaff(c, userID, inp.FromDate, inp.ToDate)
 		if err != nil {
 			newErrorResponse(c, http.StatusBadRequest, err.Error())
 			return
 		}
 	} else if inp.Position == "teamlead" {
-		incomeAll, incomeAdmin, err = h.services.Staff.GetParamsDateTeamlead(c, userID, inp.Date)
+		incomeAll, incomeAdmin, err = h.services.Staff.GetParamsDateTeamlead(c, userID, inp.FromDate, inp.ToDate)
 		if err != nil {
 			newErrorResponse(c, http.StatusBadRequest, err.Error())
 			return
 		}
 	} else {
-		incomeAll, incomeAdmin, err = h.services.Staff.GetParamsDateAdmin(c, userID, inp.Date)
+		incomeAll, incomeAdmin, err = h.services.Staff.GetParamsDateAdmin(c, userID, inp.FromDate, inp.ToDate)
 		if err != nil {
 			newErrorResponse(c, http.StatusBadRequest, err.Error())
 			return

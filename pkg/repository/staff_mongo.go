@@ -109,13 +109,15 @@ func (r *StaffRepo) AddAccount(ctx context.Context, account domain.AccountData) 
 	return err
 }
 
-func (r *StaffRepo) GetPacksAccount(ctx context.Context, accountID primitive.ObjectID, date string) ([]domain.AccountPack, error) {
+func (r *StaffRepo) GetPacksAccount(ctx context.Context, accountID primitive.ObjectID, fromDate string, toDate string) ([]domain.AccountPack, error) {
 	var packsAccount []domain.AccountPack
 	var cur *mongo.Cursor
 	var err error
 
-	if date != "" {
-		cur, err = r.db.Database().Collection(packAccountsCollection).Find(ctx, bson.M{"account_id": accountID, "date": date})
+	if toDate != "" {
+		cur, err = r.db.Database().Collection(packAccountsCollection).Find(ctx, bson.M{"account_id": accountID, "date": bson.M{"$gte": fromDate, "$lte": toDate}})
+	} else if fromDate != "" {
+		cur, err = r.db.Database().Collection(packAccountsCollection).Find(ctx, bson.M{"account_id": accountID, "date": fromDate})
 	} else {
 		cur, err = r.db.Database().Collection(packAccountsCollection).Find(ctx, bson.M{"account_id": accountID})
 	}

@@ -40,7 +40,7 @@ func (s *StaffService) AddAccount(ctx context.Context, account domain.AccountDat
 }
 
 func (s *StaffService) GetPacksAccount(ctx context.Context, accountID primitive.ObjectID, date string) ([]domain.AccountPack, error) {
-	packsAccount, err := s.repo.GetPacksAccount(ctx, accountID, date)
+	packsAccount, err := s.repo.GetPacksAccount(ctx, accountID, date, "")
 	return packsAccount, err
 }
 
@@ -84,7 +84,7 @@ func (s *StaffService) GetParamsMainStaff(ctx context.Context, userID primitive.
 	}
 
 	for _, account := range accounts {
-		packsAccount, err := s.repo.GetPacksAccount(ctx, account.ID, "")
+		packsAccount, err := s.repo.GetPacksAccount(ctx, account.ID, "", "")
 		if err != nil {
 			return 0, 0, err
 		}
@@ -98,7 +98,7 @@ func (s *StaffService) GetParamsMainStaff(ctx context.Context, userID primitive.
 	return incomeAll, incomeAdmin, nil
 }
 
-func (s *StaffService) GetParamsDateStaff(ctx context.Context, userID primitive.ObjectID, date string) (float32, float32, error) {
+func (s *StaffService) GetParamsDateStaff(ctx context.Context, userID primitive.ObjectID, fromDate string, toDate string) (float32, float32, error) {
 	incomeAll := float32(0)
 	incomeAdmin := float32(0)
 
@@ -108,7 +108,7 @@ func (s *StaffService) GetParamsDateStaff(ctx context.Context, userID primitive.
 	}
 
 	for _, account := range accounts {
-		packsAccount, err := s.repo.GetPacksAccount(ctx, account.ID, date)
+		packsAccount, err := s.repo.GetPacksAccount(ctx, account.ID, fromDate, toDate)
 		if err != nil {
 			return 0, 0, err
 		}
@@ -143,7 +143,7 @@ func (s *StaffService) GetParamsMainTeamlead(ctx context.Context, userID primiti
 	return incomeAll, incomeAdmin, nil
 }
 
-func (s *StaffService) GetParamsDateTeamlead(ctx context.Context, userID primitive.ObjectID, date string) (float32, float32, error) {
+func (s *StaffService) GetParamsDateTeamlead(ctx context.Context, userID primitive.ObjectID, fromDate string, toDate string) (float32, float32, error) {
 	incomeAll := float32(0)
 	incomeAdmin := float32(0)
 
@@ -153,7 +153,7 @@ func (s *StaffService) GetParamsDateTeamlead(ctx context.Context, userID primiti
 	}
 
 	for _, st := range staff {
-		income_st_all, income_st_admin, err := s.GetParamsDateStaff(ctx, st.ID, date)
+		income_st_all, income_st_admin, err := s.GetParamsDateStaff(ctx, st.ID, fromDate, toDate)
 		if err != nil {
 			return 0, 0, err
 		}
@@ -199,7 +199,7 @@ func (s *StaffService) GetParamsMainAdmin(ctx context.Context, userID primitive.
 	return incomeAll, incomeAdmin, nil
 }
 
-func (s *StaffService) GetParamsDateAdmin(ctx context.Context, userID primitive.ObjectID, date string) (float32, float32, error) {
+func (s *StaffService) GetParamsDateAdmin(ctx context.Context, userID primitive.ObjectID, fromDate string, toDate string) (float32, float32, error) {
 	incomeAll := float32(0)
 	incomeAdmin := float32(0)
 
@@ -209,7 +209,7 @@ func (s *StaffService) GetParamsDateAdmin(ctx context.Context, userID primitive.
 	}
 
 	for _, teamlead := range teamleads {
-		income_st_all, income_st_admin, err := s.GetParamsDateTeamlead(ctx, teamlead.ID, date)
+		income_st_all, income_st_admin, err := s.GetParamsDateTeamlead(ctx, teamlead.ID, fromDate, toDate)
 		if err != nil {
 			return 0, 0, err
 		}
@@ -223,7 +223,7 @@ func (s *StaffService) GetParamsDateAdmin(ctx context.Context, userID primitive.
 	}
 
 	for _, st := range staff {
-		income_st_all, income_st_admin, err := s.GetParamsDateStaff(ctx, st.ID, date)
+		income_st_all, income_st_admin, err := s.GetParamsDateStaff(ctx, st.ID, fromDate, toDate)
 		if err != nil {
 			return 0, 0, err
 		}

@@ -36,7 +36,8 @@ type UserDataAccount struct {
 
 type DataForParams struct {
 	Position string `json:"position" binding:"required"`
-	Date     string `json:"date"`
+	FromDate string `json:"from_date"`
+	ToDate   string `json:"to_date"`
 }
 
 type UserTeamlead struct {

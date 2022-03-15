@@ -3,6 +3,7 @@ package app
 import (
 	"net/http"
 	"os"
+	//"crypto/tls"
 
 	"github.com/joho/godotenv"
 	"github.com/Traking-work/traking-backend.git/pkg/handler"
@@ -49,14 +50,20 @@ func (s *Server) Run() error {
 	handlers := handler.NewHandler(services)
 	routes := handlers.InitRoutes()
 
+	//cert, _ := tls.LoadX509KeyPair("fullchain.pem", "privkey.pem")
+
 	s.httpServer = &http.Server{
 		Addr:           ":" + viper.GetString("http.port"),
 		Handler:        routes,
 		MaxHeaderBytes: viper.GetInt("http.maxHeaderBytes"),
 		ReadTimeout:    viper.GetDuration("http.readTimeout"),
 		WriteTimeout:   viper.GetDuration("http.writeTimeout"),
+		//TLSConfig: &tls.Config{
+		//	Certificates: []tls.Certificate{cert},
+		//},
 	}
 
 	logger.Info("Listen server...")
 	return s.httpServer.ListenAndServe()
+	//return s.httpServer.ListenAndServeTLS("", "")
 }
