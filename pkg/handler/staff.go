@@ -201,6 +201,27 @@ func (h *Handler) DeleteAccount(c *gin.Context) {
 	h.logger.Infof("Delete account %s", c.Param("ID"))
 }
 
+func (h *Handler) ChangeTeamlead(c *gin.Context) {
+	userID, err := primitive.ObjectIDFromHex(c.Param("ID"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	var inp domain.UserTeamlead
+	if err := c.BindJSON(&inp); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
+		return
+	}
+
+	if err := h.services.Staff.ChangeTeamlead(c, userID, inp.TeamLead); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	h.logger.Infof("Change teamlead from %s to %s", c.Param("ID"), inp.TeamLead)
+}
+
 func (h *Handler) GetParamsMain(c *gin.Context) {
 	userID, err := primitive.ObjectIDFromHex(c.Param("ID"))
 	if err != nil {
@@ -287,23 +308,41 @@ func (h *Handler) GetParamsDate(c *gin.Context) {
 	})
 }
 
-func (h *Handler) ChangeTeamlead(c *gin.Context) {
+func (h *Handler) GetIncome(c *gin.Context) {
 	userID, err := primitive.ObjectIDFromHex(c.Param("ID"))
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
 
-	var inp domain.UserTeamlead
+	var inp domain.DataForParams
 	if err := c.BindJSON(&inp); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
 		return
 	}
 
-	if err := h.services.Staff.ChangeTeamlead(c, userID, inp.TeamLead); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
+	income := make(map[string]float32)
+
+	if inp.Position == "staff" {
+		income, err = h.services.Staff.GetIncomeStaff(c, userID, inp.FromDate, inp.ToDate)
+		if err != nil {
+			newErrorResponse(c, http.StatusBadRequest, err.Error())
+			return
+		}
+	} else if inp.Position == "teamlead" {
+		income, err = h.services.Staff.GetIncomeTeamlead(c, userID, inp.FromDate, inp.ToDate)
+		if err != nil {
+			newErrorResponse(c, http.StatusBadRequest, err.Error())
+			return
+		}
+	} else {
+		income, err = h.services.Staff.GetIncomeAdmin(c, userID, inp.FromDate, inp.ToDate)
+		if err != nil {
+			newErrorResponse(c, http.StatusBadRequest, err.Error())
+			return
+		}
 	}
 
-	h.logger.Infof("Change teamlead from %s to %s", c.Param("ID"), inp.TeamLead)
+	h.logger.Infof("Get income %s", c.Param("ID"))
+	c.JSON(http.StatusOK, income)
 }

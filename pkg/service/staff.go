@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"strings"
 	"time"
 
 	"github.com/Traking-work/traking-backend.git/internal/domain"
@@ -71,6 +72,11 @@ func (s *StaffService) DeletePack(ctx context.Context, packID primitive.ObjectID
 
 func (s *StaffService) DeleteAccount(ctx context.Context, accountID primitive.ObjectID) error {
 	err := s.repo.DeleteAccount(ctx, accountID)
+	return err
+}
+
+func (s *StaffService) ChangeTeamlead(ctx context.Context, userID primitive.ObjectID, teamleadID primitive.ObjectID) error {
+	err := s.repo.ChangeTeamlead(ctx, userID, teamleadID)
 	return err
 }
 
@@ -234,7 +240,83 @@ func (s *StaffService) GetParamsDateAdmin(ctx context.Context, userID primitive.
 	return incomeAll, incomeAdmin, nil
 }
 
-func (s *StaffService) ChangeTeamlead(ctx context.Context, userID primitive.ObjectID, teamleadID primitive.ObjectID) error {
-	err := s.repo.ChangeTeamlead(ctx, userID, teamleadID)
-	return err
+func (s *StaffService) GetIncomeStaff(ctx context.Context, userID primitive.ObjectID, fromDate string, toDate string) (map[string]float32, error) {
+	incomeDict := make(map[string]float32)
+
+	accounts, err := s.repo.GetAllAccounts(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, account := range accounts {
+		packsAccount, err := s.repo.GetPacksAccount(ctx, account.ID, fromDate, toDate)
+		if err != nil {
+			return nil, err
+		}
+
+		for _, pack := range packsAccount {
+			dateList := strings.Split(pack.Date, "-")
+			incomeDict[dateList[1]+"."+dateList[2]] += float32(pack.CountTask) * float32(pack.Payment)
+		}
+	}
+
+	return incomeDict, nil
+}
+
+func (s *StaffService) GetIncomeTeamlead(ctx context.Context, userID primitive.ObjectID, fromDate string, toDate string) (map[string]float32, error) {
+	incomeDict := make(map[string]float32)
+
+	staff, err := s.repo.GetStaff(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, st := range staff {
+		incomeStaff, err := s.GetIncomeStaff(ctx, st.ID, fromDate, toDate)
+		if err != nil {
+			return nil, err
+		}
+
+		for data, income := range incomeStaff {
+			incomeDict[data] += income
+		}
+	}
+
+	return incomeDict, nil
+}
+
+func (s *StaffService) GetIncomeAdmin(ctx context.Context, userID primitive.ObjectID, fromDate string, toDate string) (map[string]float32, error) {
+	incomeDict := make(map[string]float32)
+
+	teamleads, err := s.repo.GetTeamLeads(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, teamlead := range teamleads {
+		incomeTeamlead, err := s.GetIncomeTeamlead(ctx, teamlead.ID, fromDate, toDate)
+		if err != nil {
+			return nil, err
+		}
+		for data, income := range incomeTeamlead {
+			incomeDict[data] += income
+		}
+	}
+
+	staff, err := s.repo.GetStaff(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, st := range staff {
+		incomeStaff, err := s.GetIncomeStaff(ctx, st.ID, fromDate, toDate)
+		if err != nil {
+			return nil, err
+		}
+		for data, income := range incomeStaff {
+			incomeDict[data] += income
+		}
+	}
+
+	return incomeDict, nil
 }

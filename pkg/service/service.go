@@ -47,13 +47,18 @@ type Staff interface {
 	ApprovePack(ctx context.Context, packID primitive.ObjectID) error
 	DeletePack(ctx context.Context, packID primitive.ObjectID) error
 	DeleteAccount(ctx context.Context, accountID primitive.ObjectID) error
+	ChangeTeamlead(ctx context.Context, userID primitive.ObjectID, teamleadID primitive.ObjectID) error
+
+	GetIncomeStaff(ctx context.Context, userID primitive.ObjectID, fromDate string, toDate string) (map[string]float32, error)
+	GetIncomeTeamlead(ctx context.Context, userID primitive.ObjectID, fromDate string, toDate string) (map[string]float32, error)
+	GetIncomeAdmin(ctx context.Context, userID primitive.ObjectID, fromDate string, toDate string) (map[string]float32, error)
+
 	GetParamsMainStaff(ctx context.Context, userID primitive.ObjectID) (float32, float32, error)
 	GetParamsDateStaff(ctx context.Context, userID primitive.ObjectID, fromDate string, toDate string) (float32, float32, error)
 	GetParamsMainTeamlead(ctx context.Context, userID primitive.ObjectID) (float32, float32, error)
 	GetParamsDateTeamlead(ctx context.Context, userID primitive.ObjectID, fromDate string, toDate string) (float32, float32, error)
 	GetParamsMainAdmin(ctx context.Context, userID primitive.ObjectID) (float32, float32, error)
 	GetParamsDateAdmin(ctx context.Context, userID primitive.ObjectID, fromDate string, toDate string) (float32, float32, error)
-	ChangeTeamlead(ctx context.Context, userID primitive.ObjectID, teamleadID primitive.ObjectID) error
 }
 
 type Service struct {

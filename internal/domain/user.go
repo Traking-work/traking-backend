@@ -34,12 +34,17 @@ type UserDataAccount struct {
 	DirectorPosition    string             `json:"director_position"`
 }
 
+type UserTeamlead struct {
+	TeamLead primitive.ObjectID `json:"teamlead"`
+}
+
 type DataForParams struct {
 	Position string `json:"position" binding:"required"`
 	FromDate string `json:"from_date"`
 	ToDate   string `json:"to_date"`
 }
 
-type UserTeamlead struct {
-	TeamLead primitive.ObjectID `json:"teamlead"`
+type GraphIncome struct {
+	Date   string  `json:"date"`
+	Income float32 `json:"income"`
 }

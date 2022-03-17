@@ -64,6 +64,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			staff.GET("/:ID/get-data-user", h.GetDataUser)
 			staff.POST("/:ID/get-accounts", h.GetAccounts)
 			staff.POST("/:ID/add-account", h.AddAccount)
+			staff.POST("/:ID/change-teamlead", h.ChangeTeamlead)
 			staff.POST("/:ID/get-data-account", h.GetDataAccount)
 			staff.POST("/:ID/add-pack", h.AddPack)
 			staff.POST("/:ID/upgrade-pack", h.UpgradePack)
@@ -72,7 +73,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			staff.GET("/:ID/delete-account", h.DeleteAccount)
 			staff.POST("/:ID/get-params-main", h.GetParamsMain)
 			staff.POST("/:ID/get-params-date", h.GetParamsDate)
-			staff.POST("/:ID/change-teamlead", h.ChangeTeamlead)
+			staff.POST("/:ID/get-income", h.GetIncome)
 		}
 	}
 
