@@ -114,12 +114,10 @@ func (r *StaffRepo) GetPacksAccount(ctx context.Context, accountID primitive.Obj
 	var cur *mongo.Cursor
 	var err error
 
-	if toDate != "" {
+	if toDate != "" && fromDate != "" {
 		cur, err = r.db.Database().Collection(packAccountsCollection).Find(ctx, bson.M{"account_id": accountID, "date": bson.M{"$gte": fromDate, "$lte": toDate}})
-	} else if fromDate != "" {
-		cur, err = r.db.Database().Collection(packAccountsCollection).Find(ctx, bson.M{"account_id": accountID, "date": fromDate})
 	} else {
-		cur, err = r.db.Database().Collection(packAccountsCollection).Find(ctx, bson.M{"account_id": accountID})
+		cur, err = r.db.Database().Collection(packAccountsCollection).Find(ctx, bson.M{"account_id": accountID, "date": fromDate})
 	}
 	if err != nil {
 		return nil, err

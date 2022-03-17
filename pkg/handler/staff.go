@@ -63,7 +63,6 @@ func (h *Handler) AddAccount(c *gin.Context) {
 		return
 	}
 	inp.UserID = userID
-	inp.Percent = 0.25
 	inp.CreateDate = time.Now()
 	inp.StatusDelete = false
 
@@ -99,12 +98,6 @@ func (h *Handler) GetDataAccount(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
-
-	income := float32(0)
-	for _, pack := range packsAccount {
-		income += float32(pack.CountTask) * float32(pack.Payment)
-	}
-	dataAccount.Income = income
 
 	h.logger.Infof("Get data account %s", c.Param("ID"))
 
@@ -222,92 +215,6 @@ func (h *Handler) ChangeTeamlead(c *gin.Context) {
 	h.logger.Infof("Change teamlead from %s to %s", c.Param("ID"), inp.TeamLead)
 }
 
-func (h *Handler) GetParamsMain(c *gin.Context) {
-	userID, err := primitive.ObjectIDFromHex(c.Param("ID"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	var inp domain.DataForParams
-	if err := c.BindJSON(&inp); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
-		return
-	}
-
-	var incomeAll float32
-	var incomeAdmin float32
-
-	if inp.Position == "staff" {
-		incomeAll, incomeAdmin, err = h.services.Staff.GetParamsMainStaff(c, userID)
-		if err != nil {
-			newErrorResponse(c, http.StatusBadRequest, err.Error())
-			return
-		}
-	} else if inp.Position == "teamlead" {
-		incomeAll, incomeAdmin, err = h.services.Staff.GetParamsMainTeamlead(c, userID)
-		if err != nil {
-			newErrorResponse(c, http.StatusBadRequest, err.Error())
-			return
-		}
-	} else {
-		incomeAll, incomeAdmin, err = h.services.Staff.GetParamsMainAdmin(c, userID)
-		if err != nil {
-			newErrorResponse(c, http.StatusBadRequest, err.Error())
-			return
-		}
-	}
-
-	h.logger.Infof("Get params main staff %s", c.Param("ID"))
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"incomeAll":   incomeAll,
-		"incomeAdmin": incomeAdmin,
-	})
-}
-
-func (h *Handler) GetParamsDate(c *gin.Context) {
-	userID, err := primitive.ObjectIDFromHex(c.Param("ID"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	var inp domain.DataForParams
-	if err := c.BindJSON(&inp); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
-		return
-	}
-
-	var incomeAll float32
-	var incomeAdmin float32
-
-	if inp.Position == "staff" {
-		incomeAll, incomeAdmin, err = h.services.Staff.GetParamsDateStaff(c, userID, inp.FromDate, inp.ToDate)
-		if err != nil {
-			newErrorResponse(c, http.StatusBadRequest, err.Error())
-			return
-		}
-	} else if inp.Position == "teamlead" {
-		incomeAll, incomeAdmin, err = h.services.Staff.GetParamsDateTeamlead(c, userID, inp.FromDate, inp.ToDate)
-		if err != nil {
-			newErrorResponse(c, http.StatusBadRequest, err.Error())
-			return
-		}
-	} else {
-		incomeAll, incomeAdmin, err = h.services.Staff.GetParamsDateAdmin(c, userID, inp.FromDate, inp.ToDate)
-		if err != nil {
-			newErrorResponse(c, http.StatusBadRequest, err.Error())
-			return
-		}
-	}
-
-	h.logger.Infof("Get params date staff %s", c.Param("ID"))
-	c.JSON(http.StatusOK, map[string]interface{}{
-		"incomeAll":   incomeAll,
-		"incomeAdmin": incomeAdmin,
-	})
-}
-
 func (h *Handler) GetIncome(c *gin.Context) {
 	userID, err := primitive.ObjectIDFromHex(c.Param("ID"))
 	if err != nil {
@@ -321,7 +228,7 @@ func (h *Handler) GetIncome(c *gin.Context) {
 		return
 	}
 
-	income := make(map[string]float32)
+	var income map[string]float32
 
 	if inp.Position == "staff" {
 		income, err = h.services.Staff.GetIncomeStaff(c, userID, inp.FromDate, inp.ToDate)

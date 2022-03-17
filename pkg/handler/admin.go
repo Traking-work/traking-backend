@@ -17,7 +17,6 @@ func (h *Handler) GetTeamLeads(c *gin.Context) {
 	}
 
 	h.logger.Info("Get teamleads")
-
 	c.JSON(http.StatusOK, map[string]interface{}{
 		"teamleads":      teamleads,
 		"teamleadCreate": teamleadCreate,
@@ -38,7 +37,6 @@ func (h *Handler) GetCountWorkers(c *gin.Context) {
 	}
 
 	h.logger.Infof("Get count workers %s", c.Param("ID"))
-
 	c.JSON(http.StatusOK, countWorkers)
 }
 
@@ -56,7 +54,6 @@ func (h *Handler) GetWorkers(c *gin.Context) {
 	}
 
 	h.logger.Infof("Get workers %s", c.Param("ID"))
-
 	c.JSON(http.StatusOK, workers)
 }
 
@@ -76,7 +73,6 @@ func (h *Handler) AddUser(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
-
 	h.logger.Infof("Add user %s", inp.Username)
 }
 
@@ -97,27 +93,5 @@ func (h *Handler) DeleteUser(c *gin.Context) {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return
 	}
-
 	h.logger.Infof("Delete user %s", c.Param("ID"))
-}
-
-func (h *Handler) SavePercent(c *gin.Context) {
-	accountID, err := primitive.ObjectIDFromHex(c.Param("ID"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	var inp domain.AccountPercent
-	if err := c.BindJSON(&inp); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
-		return
-	}
-
-	if err = h.services.Admin.SavePercent(c, accountID, inp.Percent); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	h.logger.Infof("Sae percent %s", c.Param("ID"))
 }

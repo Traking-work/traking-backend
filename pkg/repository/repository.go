@@ -23,7 +23,6 @@ type Admin interface {
 	GetWorkers(ctx context.Context, userID primitive.ObjectID) ([]domain.UserDataAccount, error)
 	AddUser(ctx context.Context, inp domain.UserData) error
 	DeleteUser(ctx context.Context, userID primitive.ObjectID, position string) error
-	SavePercent(ctx context.Context, accountID primitive.ObjectID, percent float32) error
 }
 
 type Teamlead interface {

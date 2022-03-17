@@ -51,7 +51,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			admin.GET("/:ID/get-workers", h.GetWorkers)
 			admin.POST("/add-user", h.AddUser)
 			admin.POST("/:ID/delete-user", h.DeleteUser)
-			admin.POST("/:ID/save-percent", h.SavePercent)
 		}
 
 		teamlead := api.Group("/teamlead", h.userIdentity)
@@ -71,8 +70,6 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			staff.GET("/:ID/approve-pack", h.ApprovePack)
 			staff.GET("/:ID/delete-pack", h.DeletePack)
 			staff.GET("/:ID/delete-account", h.DeleteAccount)
-			staff.POST("/:ID/get-params-main", h.GetParamsMain)
-			staff.POST("/:ID/get-params-date", h.GetParamsDate)
 			staff.POST("/:ID/get-income", h.GetIncome)
 		}
 	}

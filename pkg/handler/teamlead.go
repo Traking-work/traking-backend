@@ -21,6 +21,5 @@ func (h *Handler) GetStaff(c *gin.Context) {
 	}
 
 	h.logger.Infof("Get staff %s", c.Param("userID"))
-
 	c.JSON(http.StatusOK, staff)
 }
