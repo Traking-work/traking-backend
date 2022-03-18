@@ -185,6 +185,21 @@ func (r *StaffRepo) GetStaff(ctx context.Context, userID primitive.ObjectID) ([]
 	return staff, nil
 }
 
+func (r *StaffRepo) GetAllStaff(ctx context.Context) ([]domain.UserDataAccount, error) {
+	var staff []domain.UserDataAccount
+
+	cur, err := r.db.Database().Collection(usersCollection).Find(ctx, bson.M{"position": "staff"})
+	if err != nil {
+		return nil, err
+	}
+
+	if err := cur.All(ctx, &staff); err != nil {
+		return nil, err
+	}
+
+	return staff, nil
+}
+
 func (r *StaffRepo) GetTeamLeads(ctx context.Context) ([]domain.UserDataAccount, error) {
 	var teamleads []domain.UserDataAccount
 

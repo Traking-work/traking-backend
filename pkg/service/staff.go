@@ -160,3 +160,37 @@ func (s *StaffService) GetIncomeAdmin(ctx context.Context, userID primitive.Obje
 
 	return incomeDict, nil
 }
+
+func (s *StaffService) GetEmployeeRating(ctx context.Context, fromDate string, toDate string) (map[string]float32, error) {
+	employeeRatingMap := make(map[string]float32)
+	var incomeStaff float32
+
+	staff, err := s.repo.GetAllStaff(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, st := range staff {
+		accounts, err := s.repo.GetAllAccounts(ctx, st.ID)
+		if err != nil {
+			return nil, err
+		}
+
+		incomeStaff = 0
+
+		for _, account := range accounts {
+			packsAccount, err := s.repo.GetPacksAccount(ctx, account.ID, fromDate, toDate)
+			if err != nil {
+				return nil, err
+			}
+
+			for _, pack := range packsAccount {
+				incomeStaff += float32(pack.CountTask) * float32(pack.Payment)
+			}
+		}
+
+		employeeRatingMap[st.Username] = incomeStaff
+	}
+
+	return employeeRatingMap, nil
+}

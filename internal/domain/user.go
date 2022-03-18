@@ -39,7 +39,7 @@ type UserTeamlead struct {
 }
 
 type DataForParams struct {
-	Position string `json:"position" binding:"required"`
+	Position string `json:"position"`
 	FromDate string `json:"from_date"`
 	ToDate   string `json:"to_date"`
 }

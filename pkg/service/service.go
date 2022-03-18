@@ -50,6 +50,7 @@ type Staff interface {
 	GetIncomeStaff(ctx context.Context, userID primitive.ObjectID, fromDate string, toDate string) (map[string]float32, error)
 	GetIncomeTeamlead(ctx context.Context, userID primitive.ObjectID, fromDate string, toDate string) (map[string]float32, error)
 	GetIncomeAdmin(ctx context.Context, userID primitive.ObjectID, fromDate string, toDate string) (map[string]float32, error)
+	GetEmployeeRating(ctx context.Context, fromDate string, toDate string) (map[string]float32, error)
 }
 
 type Service struct {

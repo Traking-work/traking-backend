@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"sort"
 	"time"
 
 	"github.com/Traking-work/traking-backend.git/internal/domain"
@@ -252,4 +253,33 @@ func (h *Handler) GetIncome(c *gin.Context) {
 
 	h.logger.Infof("Get income %s", c.Param("ID"))
 	c.JSON(http.StatusOK, income)
+}
+
+func (h *Handler) GetEmployeeRating(c *gin.Context) {
+	var inp domain.DataForParams
+	if err := c.BindJSON(&inp); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
+		return
+	}
+
+	employeeRating, err := h.services.Staff.GetEmployeeRating(c, inp.FromDate, inp.ToDate)
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	type kv struct {
+		k string
+		v float32
+	}
+	sortEmployeeRating := make([]kv, 0, len(employeeRating))
+	for k, v := range employeeRating {
+		sortEmployeeRating = append(sortEmployeeRating, kv{k, v})
+	}
+	sort.Slice(sortEmployeeRating, func(i, j int) bool {
+		return sortEmployeeRating[i].v > sortEmployeeRating[j].v
+	})
+
+	h.logger.Info("Get employee rating")
+	c.JSON(http.StatusOK, employeeRating)
 }
