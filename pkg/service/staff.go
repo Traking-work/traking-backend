@@ -161,8 +161,8 @@ func (s *StaffService) GetIncomeAdmin(ctx context.Context, userID primitive.Obje
 	return incomeDict, nil
 }
 
-func (s *StaffService) GetEmployeeRating(ctx context.Context, fromDate string, toDate string) (map[string]float32, error) {
-	employeeRatingMap := make(map[string]float32)
+func (s *StaffService) GetEmployeeRating(ctx context.Context, fromDate string, toDate string) ([]domain.EmployeeRating, error) {
+	var employeeRating []domain.EmployeeRating
 	var incomeStaff float32
 
 	staff, err := s.repo.GetAllStaff(ctx)
@@ -189,8 +189,8 @@ func (s *StaffService) GetEmployeeRating(ctx context.Context, fromDate string, t
 			}
 		}
 
-		employeeRatingMap[st.Username] = incomeStaff
+		employeeRating = append(employeeRating, domain.EmployeeRating{st.ID, st.Name, st.Username, incomeStaff})
 	}
 
-	return employeeRatingMap, nil
+	return employeeRating, nil
 }

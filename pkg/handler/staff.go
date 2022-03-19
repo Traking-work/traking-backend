@@ -268,16 +268,8 @@ func (h *Handler) GetEmployeeRating(c *gin.Context) {
 		return
 	}
 
-	type kv struct {
-		k string
-		v float32
-	}
-	sortEmployeeRating := make([]kv, 0, len(employeeRating))
-	for k, v := range employeeRating {
-		sortEmployeeRating = append(sortEmployeeRating, kv{k, v})
-	}
-	sort.Slice(sortEmployeeRating, func(i, j int) bool {
-		return sortEmployeeRating[i].v > sortEmployeeRating[j].v
+	sort.Slice(employeeRating, func(i, j int) bool {
+		return employeeRating[i].Income > employeeRating[j].Income
 	})
 
 	h.logger.Info("Get employee rating")
