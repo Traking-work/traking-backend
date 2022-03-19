@@ -128,22 +128,7 @@ func (s *StaffService) GetIncomeTeamlead(ctx context.Context, userID primitive.O
 func (s *StaffService) GetIncomeAdmin(ctx context.Context, userID primitive.ObjectID, fromDate string, toDate string) (map[string]float32, error) {
 	incomeDict := make(map[string]float32)
 
-	teamleads, err := s.repo.GetTeamLeads(ctx)
-	if err != nil {
-		return nil, err
-	}
-
-	for _, teamlead := range teamleads {
-		incomeTeamlead, err := s.GetIncomeTeamlead(ctx, teamlead.ID, fromDate, toDate)
-		if err != nil {
-			return nil, err
-		}
-		for data, income := range incomeTeamlead {
-			incomeDict[data] += income
-		}
-	}
-
-	staff, err := s.repo.GetStaff(ctx, userID)
+	staff, err := s.repo.GetAllStaff(ctx)
 	if err != nil {
 		return nil, err
 	}
