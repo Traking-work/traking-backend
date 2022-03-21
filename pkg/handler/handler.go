@@ -71,7 +71,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			staff.GET("/:ID/delete-pack", h.DeletePack)
 			staff.GET("/:ID/delete-account", h.DeleteAccount)
 			staff.POST("/:ID/get-income", h.GetIncome)
-			staff.POST("/get-employee-rating", h.GetEmployeeRating)
+			staff.POST("/:ID/get-employee-rating", h.GetEmployeeRating)
 		}
 	}
 

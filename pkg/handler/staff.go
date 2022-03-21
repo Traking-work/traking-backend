@@ -256,13 +256,19 @@ func (h *Handler) GetIncome(c *gin.Context) {
 }
 
 func (h *Handler) GetEmployeeRating(c *gin.Context) {
+	userID, err := primitive.ObjectIDFromHex(c.Param("ID"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
 	var inp domain.DataForParams
 	if err := c.BindJSON(&inp); err != nil {
 		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
 		return
 	}
 
-	employeeRating, err := h.services.Staff.GetEmployeeRating(c, inp.FromDate, inp.ToDate)
+	employeeRating, err := h.services.Staff.GetEmployeeRating(c, userID, inp)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return

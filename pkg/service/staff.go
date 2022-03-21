@@ -146,13 +146,22 @@ func (s *StaffService) GetIncomeAdmin(ctx context.Context, userID primitive.Obje
 	return incomeDict, nil
 }
 
-func (s *StaffService) GetEmployeeRating(ctx context.Context, fromDate string, toDate string) ([]domain.EmployeeRating, error) {
+func (s *StaffService) GetEmployeeRating(ctx context.Context, userID primitive.ObjectID, inp domain.DataForParams) ([]domain.EmployeeRating, error) {
 	var employeeRating []domain.EmployeeRating
 	var incomeStaff float32
+	var staff []domain.UserDataAccount
+	var err error
 
-	staff, err := s.repo.GetAllStaff(ctx)
-	if err != nil {
-		return nil, err
+	if inp.Position == "admin" {
+		staff, err = s.repo.GetAllStaff(ctx)
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		staff, err = s.repo.GetStaff(ctx, userID)
+		if err != nil {
+			return nil, err
+		}
 	}
 
 	for _, st := range staff {
@@ -164,7 +173,7 @@ func (s *StaffService) GetEmployeeRating(ctx context.Context, fromDate string, t
 		incomeStaff = 0
 
 		for _, account := range accounts {
-			packsAccount, err := s.repo.GetPacksAccount(ctx, account.ID, fromDate, toDate)
+			packsAccount, err := s.repo.GetPacksAccount(ctx, account.ID, inp.FromDate, inp.ToDate)
 			if err != nil {
 				return nil, err
 			}
