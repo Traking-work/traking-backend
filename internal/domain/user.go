@@ -51,7 +51,12 @@ type GraphIncome struct {
 
 type EmployeeRating struct {
 	ID       primitive.ObjectID `json:"id" bson:"_id,omitempty"`
-	Name     string             `json:"name" binding:"required"`
 	Username string             `json:"username" binding:"required"`
 	Income   float32            `json:"income"`
+}
+
+type LogDelays struct {
+	ID       primitive.ObjectID `json:"id" bson:"_id,omitempty"`
+	Username string             `json:"username" binding:"required"`
+	Count    int                `json:"count"`
 }

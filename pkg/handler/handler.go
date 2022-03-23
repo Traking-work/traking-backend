@@ -66,6 +66,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			staff.POST("/:ID/change-teamlead", h.ChangeTeamlead)
 			staff.POST("/:ID/get-data-account", h.GetDataAccount)
 			staff.POST("/:ID/add-pack", h.AddPack)
+			staff.POST("/:ID/save-status", h.SaveStatus)
 			staff.POST("/:ID/upgrade-pack", h.UpgradePack)
 			staff.GET("/:ID/approve-pack", h.ApprovePack)
 			staff.GET("/:ID/delete-pack", h.DeletePack)

@@ -55,6 +55,11 @@ func (s *StaffService) AddPack(ctx context.Context, accountID primitive.ObjectID
 	return err
 }
 
+func (s *StaffService) SaveStatus(ctx context.Context, accountID primitive.ObjectID, status string) error {
+	err := s.repo.SaveStatus(ctx, accountID, status)
+	return err
+}
+
 func (s *StaffService) UpgradePack(ctx context.Context, packID primitive.ObjectID, pack domain.AccountPack) error {
 	err := s.repo.UpgradePack(ctx, packID, pack)
 	return err
@@ -183,7 +188,7 @@ func (s *StaffService) GetEmployeeRating(ctx context.Context, userID primitive.O
 			}
 		}
 
-		employeeRating = append(employeeRating, domain.EmployeeRating{st.ID, st.Name, st.Username, incomeStaff})
+		employeeRating = append(employeeRating, domain.EmployeeRating{st.ID, st.Username, incomeStaff})
 	}
 
 	return employeeRating, nil

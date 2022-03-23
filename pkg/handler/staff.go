@@ -47,7 +47,6 @@ func (h *Handler) GetAccounts(c *gin.Context) {
 	}
 
 	h.logger.Infof("Get accounts %s", c.Param("ID"))
-
 	c.JSON(http.StatusOK, accounts)
 }
 
@@ -127,6 +126,27 @@ func (h *Handler) AddPack(c *gin.Context) {
 	}
 
 	h.logger.Infof("Add pack %s", c.Param("ID"))
+}
+
+func (h *Handler) SaveStatus(c *gin.Context) {
+	accountID, err := primitive.ObjectIDFromHex(c.Param("ID"))
+	if err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	var inp domain.Status
+	if err := c.BindJSON(&inp); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
+		return
+	}
+
+	if err := h.services.Staff.SaveStatus(c, accountID, inp.StatusAccount); err != nil {
+		newErrorResponse(c, http.StatusBadRequest, err.Error())
+		return
+	}
+
+	h.logger.Infof("Save status %s", c.Param("ID"))
 }
 
 func (h *Handler) UpgradePack(c *gin.Context) {

@@ -42,6 +42,7 @@ type Staff interface {
 	GetPacksAccount(ctx context.Context, accountID primitive.ObjectID, date string) ([]domain.AccountPack, error)
 	GetDataAccount(ctx context.Context, accountID primitive.ObjectID) (domain.AccountData, error)
 	AddPack(ctx context.Context, accountID primitive.ObjectID, pack domain.AccountPack) error
+	SaveStatus(ctx context.Context, accountID primitive.ObjectID, status string) error
 	UpgradePack(ctx context.Context, packID primitive.ObjectID, pack domain.AccountPack) error
 	ApprovePack(ctx context.Context, packID primitive.ObjectID) error
 	DeletePack(ctx context.Context, packID primitive.ObjectID) error
