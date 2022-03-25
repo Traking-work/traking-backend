@@ -40,8 +40,8 @@ func (s *StaffService) AddAccount(ctx context.Context, account domain.AccountDat
 	return err
 }
 
-func (s *StaffService) GetPacksAccount(ctx context.Context, accountID primitive.ObjectID, date string) ([]domain.AccountPack, error) {
-	packsAccount, err := s.repo.GetPacksAccount(ctx, accountID, date, "")
+func (s *StaffService) GetPacksAccount(ctx context.Context, accountID primitive.ObjectID, fromDate string, toDate string) ([]domain.AccountPack, error) {
+	packsAccount, err := s.repo.GetPacksAccount(ctx, accountID, fromDate, toDate)
 	return packsAccount, err
 }
 

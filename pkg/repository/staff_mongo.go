@@ -140,7 +140,7 @@ func (r *StaffRepo) GetDataAccount(ctx context.Context, accountID primitive.Obje
 }
 
 func (r *StaffRepo) AddPack(ctx context.Context, accountID primitive.ObjectID, pack domain.AccountPack) error {
-	_, err := r.db.Database().Collection(packAccountsCollection).InsertOne(ctx, bson.M{"account_id": accountID, "name": pack.Name, "count_task": pack.CountTask, "payment": pack.Payment, "status": pack.Status, "date": pack.Date})
+	_, err := r.db.Database().Collection(packAccountsCollection).InsertOne(ctx, bson.M{"account_id": accountID, "name": pack.Name, "count_task": pack.CountTask, "payment": pack.Payment, "status": pack.Status, "date": pack.FromDate})
 	return err
 }
 

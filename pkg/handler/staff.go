@@ -93,7 +93,7 @@ func (h *Handler) GetDataAccount(c *gin.Context) {
 		return
 	}
 
-	packsAccount, err := h.services.Staff.GetPacksAccount(c, accountID, inp.Date)
+	packsAccount, err := h.services.Staff.GetPacksAccount(c, accountID, inp.FromDate, inp.ToDate)
 	if err != nil {
 		newErrorResponse(c, http.StatusBadRequest, err.Error())
 		return

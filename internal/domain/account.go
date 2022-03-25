@@ -21,6 +21,8 @@ type AccountPack struct {
 	CountTask int                `json:"count_task" bson:"count_task"`
 	Payment   float32            `json:"payment"`
 	Status    string             `json:"status"`
+	FromDate  string             `json:"from_date"`
+	ToDate    string             `json:"to_date"`
 	Date      string             `json:"date"`
 }
 
