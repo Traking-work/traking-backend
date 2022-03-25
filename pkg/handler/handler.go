@@ -31,7 +31,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 	router := gin.Default()
 
 	router.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{os.Getenv("FRONTEND_URL")},
+		AllowOrigins:     []string{os.Getenv("FRONTEND_URL"), "http://703449-cv99377.tmweb.ru"},
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE"},
 		AllowHeaders:     []string{"Content-Type,access-control-allow-origin, access-control-allow-headers,authorization,my-custom-header"},
 		AllowCredentials: true,
@@ -66,9 +66,7 @@ func (h *Handler) InitRoutes() *gin.Engine {
 			staff.POST("/:ID/change-teamlead", h.ChangeTeamlead)
 			staff.POST("/:ID/get-data-account", h.GetDataAccount)
 			staff.POST("/:ID/add-pack", h.AddPack)
-			staff.POST("/:ID/save-status", h.SaveStatus)
 			staff.POST("/:ID/upgrade-pack", h.UpgradePack)
-			staff.GET("/:ID/approve-pack", h.ApprovePack)
 			staff.GET("/:ID/delete-pack", h.DeletePack)
 			staff.GET("/:ID/delete-account", h.DeleteAccount)
 			staff.POST("/:ID/get-income", h.GetIncome)

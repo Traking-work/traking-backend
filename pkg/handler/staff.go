@@ -128,27 +128,6 @@ func (h *Handler) AddPack(c *gin.Context) {
 	h.logger.Infof("Add pack %s", c.Param("ID"))
 }
 
-func (h *Handler) SaveStatus(c *gin.Context) {
-	accountID, err := primitive.ObjectIDFromHex(c.Param("ID"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	var inp domain.Status
-	if err := c.BindJSON(&inp); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, "Invalid input body")
-		return
-	}
-
-	if err := h.services.Staff.SaveStatus(c, accountID, inp.StatusAccount); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	h.logger.Infof("Save status %s", c.Param("ID"))
-}
-
 func (h *Handler) UpgradePack(c *gin.Context) {
 	packID, err := primitive.ObjectIDFromHex(c.Param("ID"))
 	if err != nil {
@@ -168,21 +147,6 @@ func (h *Handler) UpgradePack(c *gin.Context) {
 	}
 
 	h.logger.Infof("Update pack %s", c.Param("ID"))
-}
-
-func (h *Handler) ApprovePack(c *gin.Context) {
-	packID, err := primitive.ObjectIDFromHex(c.Param("ID"))
-	if err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	if err := h.services.Staff.ApprovePack(c, packID); err != nil {
-		newErrorResponse(c, http.StatusBadRequest, err.Error())
-		return
-	}
-
-	h.logger.Infof("Approve pack %s", c.Param("ID"))
 }
 
 func (h *Handler) DeletePack(c *gin.Context) {
