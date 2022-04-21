@@ -928,3 +928,7 @@ time="2022-03-25T19:01:36+05:00" level=info msg="Get count workers 62126614edfb5
 time="2022-03-25T19:01:36+05:00" level=info msg="Get teamleads" func="github.com/Traking-work/traking-backend.git/pkg/handler.(*Handler).GetTeamLeads()" file="admin.go:19"
 time="2022-03-25T19:01:45+05:00" level=info msg="Get income 62126614edfb5b2777ab879f" func="github.com/Traking-work/traking-backend.git/pkg/handler.(*Handler).GetIncome()" file="staff.go:238"
 time="2022-03-25T19:01:45+05:00" level=info msg="Get employee rating" func="github.com/Traking-work/traking-backend.git/pkg/handler.(*Handler).GetEmployeeRating()" file="staff.go:265"
+time="2022-04-01T22:13:19+05:00" level=info msg="Success initializing configs" func="github.com/Traking-work/traking-backend.git/internal/app.(*Server).Run()" file="app.go:32"
+time="2022-04-01T22:13:19+05:00" level=info msg="Success loading env variables" func="github.com/Traking-work/traking-backend.git/internal/app.(*Server).Run()" file="app.go:38"
+time="2022-04-01T22:13:27+05:00" level=info msg="Success connect mongodb" func="github.com/Traking-work/traking-backend.git/internal/app.(*Server).Run()" file="app.go:45"
+time="2022-04-01T22:13:27+05:00" level=info msg="Listen server..." func="github.com/Traking-work/traking-backend.git/internal/app.(*Server).Run()" file="app.go:66"
